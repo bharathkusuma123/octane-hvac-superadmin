@@ -1,0 +1,29 @@
+.satisfaction-container {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.satisfaction-title {
+  font-weight: 600;
+  font-size: 1.8rem;
+  color: #111827;
+  text-align: left;
+}
+
+.satisfaction-subtitle {
+   font-size: 1rem;
+  color: #6b7280;
+  text-align: left;
+}
+
+.satisfaction-label {
+  font-weight: 500;
+  color: #374151;
+  text-align: left !important;
+  display: block;
+}
+
+.satisfaction-input::placeholder {
+  color: #9ca3af;
+  font-size: 0.95rem;
+}

@@ -1,0 +1,124 @@
+.company-form-container {
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+}
+
+.company-form-title {
+  font-size: 28px;
+  color: #1d4ed8;
+  margin-bottom: 10px;
+}
+
+.company-form-box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin: auto;
+  text-align: left;
+}
+
+.company-form-heading {
+  margin-bottom: 5px;
+  font-size: 28px;
+}
+
+.company-form-subtitle {
+  margin-bottom: 20px;
+  color: #777;
+}
+
+.company-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.company-form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.company-form-group {
+  flex: 1;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+}
+
+.company-form-group label {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.company-form-group input,
+.company-form-group select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.company-form-group input:focus,
+.company-form-group select:focus {
+  border-color: #1d4ed8;
+}
+
+.company-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.company-cancel-btn,
+.company-save-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.company-cancel-btn {
+  background: #f3f4f6;
+  color: #333;
+}
+
+.company-save-btn {
+  background: #1d4ed8;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .company-form-row {
+    flex-direction: column;
+  }
+
+  .company-form-box {
+    padding: 20px;
+  }
+
+  .company-form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.company-form-box, .company-table-box {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.05);
+}
+
+.company-form-heading {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.company-form-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+}

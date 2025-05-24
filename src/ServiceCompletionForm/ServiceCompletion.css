@@ -1,0 +1,66 @@
+.service-completion-container {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+}
+
+.service-completion-title {
+ font-weight: 600;
+  font-size: 1.8rem;
+  color: #111827;
+  text-align: left;
+}
+
+.service-completion-subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+  text-align: left;
+}
+
+.service-completion-label {
+ font-weight: 500;
+  color: #374151;
+  text-align: left !important;
+   display: block;
+}
+
+.service-completion-input {
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  /* background-color: #f1f5f9; */
+}
+
+.service-completion-input:focus {
+  background-color: #e0f0ff;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.service-completion-cancel {
+  font-weight: 500;
+  padding: 6px 18px;
+}
+
+.service-completion-submit {
+  font-weight: 500;
+  padding: 6px 18px;
+}
+
+
+.service-wrapper {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+}
+
+.service-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.service-subtitle {
+  font-size: 0.95rem;
+  color: #555;
+}

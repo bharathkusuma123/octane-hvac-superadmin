@@ -1,0 +1,40 @@
+.complaints-container {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.complaints-title {
+  font-weight: 600;
+  font-size: 1.8rem;
+  color: #111827;
+  text-align: left;
+}
+
+.complaints-subtitle {
+   font-size: 1rem;
+  color: #6b7280;
+  text-align: left;
+}
+
+.complaints-label {
+  font-weight: 500;
+  color: #374151;
+  text-align: left !important;
+  display: block;
+}
+
+.complaints-input::placeholder {
+  color: #9ca3af;
+  font-size: 0.95rem;
+    /* background-color: #fff; */
+}
+
+.complaints-btn-cancel {
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+.complaints-btn-save {
+  font-weight: 500;
+  border-radius: 4px;
+}
