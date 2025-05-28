@@ -16,6 +16,7 @@ import CompanyInformation from "./Company/CompanyInformation";
 import CustomerComplaints from "./CustomerComplaints/CustomerComplaints";
 import CustomerSatisfactionSurvey from "./CustomerSatisfactionSurvey/CustomerSatisfactionSurvey";
 import ServiceCompletion from "./ServiceCompletionForm/ServiceCompletion";
+import UserManagement from "./Users/UserManagement"
 
 // 🔹 TopNavbar
 const TopNavbar = () => {
@@ -35,6 +36,7 @@ const TopNavbar = () => {
     { path: "/superadmin/service-completion", label: "Service Completion" },
     { path: "/superadmin/customer-satisfaction-survey", label: "Customer Satisfaction Survey" },
     { path: "/superadmin/customer-complaints", label: "Customer Complaints" },
+    { path: "/superadmin/user-management", label: "Users" },
   ];
 
   return (
@@ -117,6 +119,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/superadmin/user-management"
+          element={
+            <ProtectedRoute>
+              <UserManagement />
+            </ProtectedRoute>
+          }
+        />
+        
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
