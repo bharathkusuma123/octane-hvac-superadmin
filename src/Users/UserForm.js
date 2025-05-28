@@ -23,11 +23,11 @@ const UserForm = ({ onCancel, onSave }) => {
     current_password: "",
     last_password: "",
     status: "Active",
-    hourly_rate: "",
-    security_question1: "",
-    answer1: "",
-    security_question2: "",
-    answer2: "",
+    // hourly_rate: "",
+    // security_question1: "",
+    // answer1: "",
+    // security_question2: "",
+    // answer2: "",
     remarks: "",
     created_by: "admin", // example fixed, or from auth
     updated_by: "admin", // example fixed, or from auth
@@ -49,72 +49,72 @@ const UserForm = ({ onCancel, onSave }) => {
 
 
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  const generateUserId = async () => {
-    const response = await fetch('http://175.29.21.7:8006/users/');
-    const users = await response.json();
+    const generateUserId = async () => {
+      const response = await fetch('http://175.29.21.7:8006/users/');
+      const users = await response.json();
 
-    const userIds = users.map(u => u.user_id).filter(id => /^USRID\d+$/.test(id));
-    const numbers = userIds.map(id => parseInt(id.replace('USRID', ''), 10));
-    const max = Math.max(...numbers, 0);
-    const newId = `USRID${(max + 1).toString().padStart(4, '0')}`;
+      const userIds = users.map(u => u.user_id).filter(id => /^USRID\d+$/.test(id));
+      const numbers = userIds.map(id => parseInt(id.replace('USRID', ''), 10));
+      const max = Math.max(...numbers, 0);
+      const newId = `USRID${(max + 1).toString().padStart(4, '0')}`;
 
-    return newId;
-  };
+      return newId;
+    };
 
-  const user_id = await generateUserId();  // ✅ Now user_id is defined
+    const user_id = await generateUserId();  // ✅ Now user_id is defined
 
-  const safeTrim = (val) => (val && typeof val === "string" ? val.trim() : "");
+    const safeTrim = (val) => (val && typeof val === "string" ? val.trim() : "");
 
-  const payload = {
-    user_id,
-    username: safeTrim(formData.username) || null,
-    full_name: safeTrim(formData.full_name) || null,
-    email: safeTrim(formData.email) || null,
-    role: formData.role || null,
-    mobile_no: safeTrim(formData.phone) || null,
-    telephone: safeTrim(formData.telephone) || null,
-    city: safeTrim(formData.city) || null,
-    country_code: safeTrim(formData.country_code) || null,
-    address: safeTrim(formData.address) || null,
-    last_password: formData.last_password || null,
-    password: formData.current_password || null,
-    status: formData.status || "Active",
-    hourly_rate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : 0,
-    security_question1: formData.security_question1 || null,
-    answer1: safeTrim(formData.answer1) || null,
-    security_question2: formData.security_question2 || null,
-    answer2: safeTrim(formData.answer2) || null,
-    remarks: safeTrim(formData.remarks) || null,
-    created_by: formData.created_by || "admin",
-    updated_by: formData.updated_by || "admin",
-  };
+    const payload = {
+      user_id,
+      username: safeTrim(formData.username) || null,
+      full_name: safeTrim(formData.full_name) || null,
+      email: safeTrim(formData.email) || null,
+      role: "Admin" || null,
+      mobile_no: safeTrim(formData.phone) || null,
+      telephone: safeTrim(formData.telephone) || null,
+      city: safeTrim(formData.city) || null,
+      country_code: safeTrim(formData.country_code) || null,
+      address: safeTrim(formData.address) || null,
+      last_password: formData.last_password || null,
+      password: formData.current_password || null,
+      status: formData.status || "Active",
+      // hourly_rate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : 0,
+      // security_question1: formData.security_question1 || null,
+      // answer1: safeTrim(formData.answer1) || null,
+      // security_question2: formData.security_question2 || null,
+      // answer2: safeTrim(formData.answer2) || null,
+      remarks: safeTrim(formData.remarks) || null,
+      created_by: formData.created_by || "admin",
+      updated_by: formData.updated_by || "admin",
+    };
 
-  console.log("Sending payload", payload);
+    console.log("Sending payload", payload);
 
-  try {
-    const response = await fetch("http://175.29.21.7:8006/users/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const response = await fetch("http://175.29.21.7:8006/users/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      alert(`Failed: ${response.status} - ${JSON.stringify(errorData)}`);
-      return;
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(`Failed: ${response.status} - ${JSON.stringify(errorData)}`);
+        return;
+      }
+
+      alert("User saved successfully!");
+      onSave();
+    } catch (error) {
+      alert("Error while saving user: " + error.message);
     }
-
-    alert("User saved successfully!");
-    onSave();
-  } catch (error) {
-    alert("Error while saving user: " + error.message);
-  }
-};
+  };
 
 
 
@@ -131,50 +131,47 @@ const handleSubmit = async (e) => {
           <h3>Basic Information</h3>
           <div className="user-management-row">
             <label> UserName
-            <input
-              type="text"
-              name="username"
-              placeholder="Enter username"
-              className="user-management-input"
-              value={formData.username}
-              onChange={handleChange}
-              required
-            />
+              <input
+                type="text"
+                name="username"
+                placeholder="Enter username"
+                className="user-management-input"
+                value={formData.username}
+                onChange={handleChange}
+                required
+              />
             </label>
             <label> Full Name
-            <input
-              type="text"
-              name="full_name"
-              placeholder="Enter full name"
-              className="user-management-input"
-              value={formData.full_name}
-              onChange={handleChange}
-              required
-            />
+              <input
+                type="text"
+                name="full_name"
+                placeholder="Enter full name"
+                className="user-management-input"
+                value={formData.full_name}
+                onChange={handleChange}
+                required
+              />
             </label>
             <label> Email
-            <input
-              type="email"
-              name="email"
-              placeholder="user@example.com"
-              className="user-management-input"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
+              <input
+                type="email"
+                name="email"
+                placeholder="user@example.com"
+                className="user-management-input"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
             </label>
-            <label> Role Type
-            <select
-              name="role"
-              className="user-management-input"
-              value={formData.role}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select role</option>
-              <option>Admin</option>
-              {/* <option>Customer</option> */}
-            </select>
+            <label>
+              Role Type
+              <input
+                type="text"
+                name="role"
+                className="user-management-input"
+                value="Admin"
+                readOnly
+              />
             </label>
           </div>
         </section>
@@ -184,47 +181,47 @@ const handleSubmit = async (e) => {
           <h3>Contact Information</h3>
           <div className="user-management-row">
             <label> Mobile
-            <input
-              type="text"
-              name="phone"
-              placeholder="Mobile (e.g., +1 123-456-7890)"
-              className="user-management-input"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
+              <input
+                type="text"
+                name="phone"
+                placeholder="Mobile (e.g., +1 123-456-7890)"
+                className="user-management-input"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
             </label>
             <label> Telephone
-            <input
-              type="text"
-              name="telephone"
-              placeholder="Telephone"
-              className="user-management-input"
-              value={formData.telephone}
-              onChange={handleChange}
-            />
+              <input
+                type="text"
+                name="telephone"
+                placeholder="Telephone"
+                className="user-management-input"
+                value={formData.telephone}
+                onChange={handleChange}
+              />
             </label>
             <label> City
-            <input
-              type="text"
-              name="city"
-              placeholder="City"
-              className="user-management-input"
-              value={formData.city}
-              onChange={handleChange}
-              required
-            />
+              <input
+                type="text"
+                name="city"
+                placeholder="City"
+                className="user-management-input"
+                value={formData.city}
+                onChange={handleChange}
+                required
+              />
             </label>
             <label> Country
-            <input
-              type="text"
-              name="country_code"
-              placeholder="Country Code (e.g., +966)"
-              className="user-management-input"
-              value={formData.country_code}
-              onChange={handleChange}
-              required
-            />
+              <input
+                type="text"
+                name="country_code"
+                placeholder="Country Code (e.g., +966)"
+                className="user-management-input"
+                value={formData.country_code}
+                onChange={handleChange}
+                required
+              />
             </label>
           </div>
         </section>
@@ -248,29 +245,29 @@ const handleSubmit = async (e) => {
 
           <div className="user-management-row">
             <label> Current Password
-            <input
-              type="password"
-              name="current_password"
-              placeholder="Enter password"
-              className="user-management-input"
-              value={formData.current_password}
-              onChange={handleChange}
-              required
-            />
+              <input
+                type="password"
+                name="current_password"
+                placeholder="Enter password"
+                className="user-management-input"
+                value={formData.current_password}
+                onChange={handleChange}
+                required
+              />
             </label>
             <label> Confirm Password
-            <input
-              type="password"
-              name="last_password"
-              placeholder="Confirm password"
-              className="user-management-input"
-              value={formData.last_password}
-              onChange={handleChange}
-              required
-            />
+              <input
+                type="password"
+                name="last_password"
+                placeholder="Confirm password"
+                className="user-management-input"
+                value={formData.last_password}
+                onChange={handleChange}
+                required
+              />
             </label>
             <div className="user-management-status">
-              <label> 
+              <label>
                 <input
                   type="radio"
                   name="status"
@@ -301,7 +298,7 @@ const handleSubmit = async (e) => {
                 Blocked
               </label>
             </div>
-            <label> Hourly Rate
+            {/* <label> Hourly Rate
             <input
               type="number"
               step="0.01"
@@ -311,12 +308,12 @@ const handleSubmit = async (e) => {
               value={formData.hourly_rate}
               onChange={handleChange}
             />
-            </label>
+            </label> */}
           </div>
         </section>
 
         {/* Security Questions */}
-        <section className="user-management-section">
+        {/* <section className="user-management-section">
           <h3>Security Questions</h3>
           <div className="user-management-row">
             <select
@@ -366,7 +363,7 @@ const handleSubmit = async (e) => {
               required
             />
           </div>
-        </section>
+        </section> */}
 
         {/* Additional Notes */}
         <section className="user-management-section">
