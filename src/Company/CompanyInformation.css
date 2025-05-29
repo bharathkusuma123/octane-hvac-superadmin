@@ -122,3 +122,24 @@
   font-size: 0.9rem;
   color: #666;
 }
+.table-responsive {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table th {
+  background-color: #343a40;
+  font-weight: 600;
+  color: white;
+  vertical-align: middle;
+}
+
+.table td {
+  vertical-align: middle;
+}
