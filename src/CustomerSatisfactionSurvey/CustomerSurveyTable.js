@@ -33,6 +33,7 @@ const CustomerSurveyTable = ({ onAdd }) => {
           <table className="table table-bordered table-hover">
             <thead className="table-light">
               <tr>
+                <th>S.No</th>
                 <th>Survey ID</th>
                 <th>Order ID</th>
                 <th>Customer ID</th>
@@ -50,6 +51,7 @@ const CustomerSurveyTable = ({ onAdd }) => {
             <tbody>
               {dummyData.map((entry, idx) => (
                 <tr key={idx}>
+                  <td>{idx + 1}</td> {/* S.No */}
                   <td>{entry.survey_id}</td>
                   <td>{entry.service_order_id}</td>
                   <td>{entry.customer_id}</td>

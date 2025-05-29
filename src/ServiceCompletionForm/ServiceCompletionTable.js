@@ -32,6 +32,7 @@ const ServiceCompletionTable = ({ onAdd }) => {
           <table className="table table-bordered table-hover">
             <thead className="table-light">
               <tr>
+                <th>S.No</th>
                 <th>ID</th>
                 <th>Service Item ID</th>
                 <th>Component ID</th>
@@ -48,6 +49,7 @@ const ServiceCompletionTable = ({ onAdd }) => {
             <tbody>
               {dummyData.map((entry, idx) => (
                 <tr key={idx}>
+                  <td>{idx + 1}</td> {/* S.No */}
                   <td>{entry.component_entry_id}</td>
                   <td>{entry.service_item_id}</td>
                   <td>{entry.component_id}</td>

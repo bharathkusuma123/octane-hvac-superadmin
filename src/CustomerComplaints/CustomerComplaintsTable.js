@@ -34,6 +34,7 @@ const CustomerComplaintsTable = ({ onAdd }) => {
           <table className="table table-bordered table-hover">
             <thead className="table-light">
               <tr>
+                <th>S.No</th>
                 <th>Complaint ID</th>
                 <th>Customer ID</th>
                 <th>Service Item ID</th>
@@ -52,6 +53,7 @@ const CustomerComplaintsTable = ({ onAdd }) => {
             <tbody>
               {dummyData.map((item, idx) => (
                 <tr key={idx}>
+                  <td>{idx + 1}</td> {/* S.No */}
                   <td>{item.complaint_id}</td>
                   <td>{item.customer_id}</td>
                   <td>{item.service_item_id}</td>

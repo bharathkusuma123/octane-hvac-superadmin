@@ -32,6 +32,7 @@ const CompanyTable = ({ onAdd }) => {
           <table className="table table-bordered table-hover">
             <thead className="table-light">
               <tr>
+                <th>S.No</th>
                 <th>ID</th>
                 <th>Company Name</th>
                 <th>CR Number</th>
@@ -50,6 +51,7 @@ const CompanyTable = ({ onAdd }) => {
             <tbody>
               {dummyData.map((company, index) => (
                 <tr key={index}>
+                  <td>{index + 1}</td> {/* S.No */}
                   <td>{company.company_id}</td>
                   <td>{company.company_name}</td>
                   <td>{company.cr_number}</td>
