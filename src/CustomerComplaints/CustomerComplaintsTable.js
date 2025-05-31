@@ -60,9 +60,9 @@ const CustomerComplaintsTable = ({ onAdd }) => {
             <h2 className="complaints-title mb-0">Complaint Records</h2>
             <p className="text-muted mb-0">Manage customer complaints</p>
           </div>
-          <button className="btn btn-primary" onClick={onAdd}>
+          {/* <button className="btn btn-primary" onClick={onAdd}>
             Add Complaint
-          </button>
+          </button> */}
         </div>
 
         {/* Controls */}

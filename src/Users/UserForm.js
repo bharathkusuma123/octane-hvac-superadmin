@@ -10,28 +10,24 @@ const SECURITY_QUESTION_CHOICES = [
 ];
 
 const UserForm = ({ onCancel, onSave }) => {
-  const [formData, setFormData] = useState({
-    username: "",
-    full_name: "",
-    email: "",
-    role: "Admin",
-    phone: "",
-    telephone: "",
-    city: "",
-    country_code: "",
-    address: "",
-    current_password: "",
-    last_password: "",
-    status: "Active",
-    // hourly_rate: "",
-    // security_question1: "",
-    // answer1: "",
-    // security_question2: "",
-    // answer2: "",
-    remarks: "",
-    created_by: "admin", // example fixed, or from auth
-    updated_by: "admin", // example fixed, or from auth
-  });
+const [formData, setFormData] = useState({
+  username: "",
+  full_name: "",
+  email: "",
+  role: "Admin",
+  phone: "",            
+  telephone: "",       
+  city: "",
+  country_code: "",
+  address: "",
+  current_password: "",
+  last_password: "",
+  status: "Active",
+  remarks: "",
+  created_by: "Admin",
+  updated_by: "Admin",
+});
+
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
@@ -68,29 +64,25 @@ const UserForm = ({ onCancel, onSave }) => {
 
     const safeTrim = (val) => (val && typeof val === "string" ? val.trim() : "");
 
-    const payload = {
-      user_id,
-      username: safeTrim(formData.username) || null,
-      full_name: safeTrim(formData.full_name) || null,
-      email: safeTrim(formData.email) || null,
-      role: "Admin" || null,
-      mobile_no: safeTrim(formData.phone) || null,
-      telephone: safeTrim(formData.telephone) || null,
-      city: safeTrim(formData.city) || null,
-      country_code: safeTrim(formData.country_code) || null,
-      address: safeTrim(formData.address) || null,
-      last_password: formData.last_password || null,
-      password: formData.current_password || null,
-      status: formData.status || "Active",
-      // hourly_rate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : 0,
-      // security_question1: formData.security_question1 || null,
-      // answer1: safeTrim(formData.answer1) || null,
-      // security_question2: formData.security_question2 || null,
-      // answer2: safeTrim(formData.answer2) || null,
-      remarks: safeTrim(formData.remarks) || null,
-      created_by: formData.created_by || "admin",
-      updated_by: formData.updated_by || "admin",
-    };
+const payload = {
+  user_id,
+  username: safeTrim(formData.username) || null,
+  full_name: safeTrim(formData.full_name) || null,
+  email: safeTrim(formData.email) || null,
+  role: formData.role || null,
+  phone: safeTrim(formData.phone) || null,           
+  telephone: safeTrim(formData.telephone) || null,   
+  city: safeTrim(formData.city) || null,
+  country_code: safeTrim(formData.country_code) || null,
+  address: safeTrim(formData.address) || null,
+  last_password: formData.last_password || null,
+  password: formData.current_password || null,
+  status: formData.status || "Active",
+  remarks: safeTrim(formData.remarks) || null,
+  created_by: formData.created_by || "admin",
+  updated_by: formData.updated_by || "admin",
+};
+
 
     console.log("Sending payload", payload);
 

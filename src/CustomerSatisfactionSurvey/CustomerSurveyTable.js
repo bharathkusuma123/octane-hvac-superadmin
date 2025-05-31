@@ -55,9 +55,9 @@ const CustomerSurveyTable = ({ onAdd }) => {
             <h2 className="mb-0">Customer Surveys</h2>
             <p className="text-muted mb-0">Manage customer satisfaction responses</p>
           </div>
-          <button className="btn btn-primary" onClick={onAdd}>
+          {/* <button className="btn btn-primary" onClick={onAdd}>
             Add Survey
-          </button>
+          </button> */}
         </div>
 
         {/* Controls */}
