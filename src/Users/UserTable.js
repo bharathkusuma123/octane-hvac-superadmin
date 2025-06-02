@@ -249,6 +249,7 @@ const UserTable = ({ onAdd }) => {
               <th>User ID</th>
               <th>Username</th>
               <th>Full Name</th>
+               <th>Company</th>
               <th>Email</th>
               <th>Mobile</th>
               <th>Telephone</th>
@@ -273,6 +274,7 @@ const UserTable = ({ onAdd }) => {
                   <td>{user.user_id}</td>
                   <td>{user.username}</td>
                   <td>{user.full_name}</td>
+                   <td>{user.company || "NA"}</td>
                   <td>{user.email}</td>
                   <td>{user.phone}</td>
                   <td>{user.phone}</td>
