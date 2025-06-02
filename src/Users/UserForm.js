@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
 import "./UserManagement.css";
 
 const SECURITY_QUESTION_CHOICES = [
@@ -26,7 +26,9 @@ const [formData, setFormData] = useState({
   remarks: "",
   created_by: "Admin",
   updated_by: "Admin",
+   company: "",
 });
+const [companies, setCompanies] = useState([]);
 
 
   const handleChange = (e) => {
@@ -36,6 +38,23 @@ const [formData, setFormData] = useState({
       [name]: type === "number" ? value.trim() : value,
     }));
   };
+
+  useEffect(() => {
+  const fetchCompanies = async () => {
+    try {
+      const response = await fetch("http://175.29.21.7:8006/companies/");
+      const data = await response.json();
+      if (data.status === "success") {
+        setCompanies(data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching companies:", error);
+    }
+  };
+
+  fetchCompanies();
+}, []);
+
 
   const handleStatusChange = (e) => {
     setFormData((prev) => ({ ...prev, status: e.target.value }));
@@ -70,6 +89,7 @@ const payload = {
   full_name: safeTrim(formData.full_name) || null,
   email: safeTrim(formData.email) || null,
   role: formData.role || null,
+  company: formData.company || null,
   phone: safeTrim(formData.phone) || null,           
   telephone: safeTrim(formData.telephone) || null,   
   city: safeTrim(formData.city) || null,
@@ -165,6 +185,24 @@ const payload = {
                 readOnly
               />
             </label>
+
+            <label>
+  Company
+  <select
+    name="company"
+    className="user-management-input"
+    value={formData.company}
+    onChange={handleChange}
+    required
+  >
+    <option value="">Select a company</option>
+    {companies.map((company) => (
+      <option key={company.company_id} value={company.company_id}>
+        {company.company_name}
+      </option>
+    ))}
+  </select>
+</label>
           </div>
         </section>
 
