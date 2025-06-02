@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./CompanyInformation.css";
 
 const CompanyForm = ({ onCancel, onSave }) => {
   const [formData, setFormData] = useState({
+    companyId: "",
     companyName: "",
     crNumber: "",
     vatNumber: "",
@@ -18,10 +20,37 @@ const CompanyForm = ({ onCancel, onSave }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Company Submitted: ", formData);
-    onSave();
+
+    const currentTime = new Date().toISOString();
+
+    const payload = {
+  company_id: formData.companyId,
+  company_name: formData.companyName,
+  cr_number: formData.crNumber,
+  vat_number: formData.vatNumber,
+  service_email: formData.serviceEmail,
+  gm_email: formData.gmEmail,
+  currency_code: formData.currencyCode,
+  time_zone: formData.timeZone,
+  status: formData.status, // Should be "Active" or "Inactive"
+  created_at: currentTime,
+  updated_at: currentTime,
+  created_by: "Super Admin",
+  updated_by: "Super Admin",
+};
+
+
+    try {
+      const response = await axios.post("http://175.29.21.7:8006/companies/", payload);
+      console.log("Response:", response.data);
+      alert("Company added successfully");
+      onSave();
+    } catch (error) {
+      console.error("Error adding company:", error);
+      alert("Failed to add company");
+    }
   };
 
   return (
@@ -33,36 +62,97 @@ const CompanyForm = ({ onCancel, onSave }) => {
         <form onSubmit={handleSubmit}>
           <div className="row g-3 mb-3">
             <div className="col-md-6">
+              <label className="form-label">Company ID</label>
+              <input
+                type="text"
+                name="companyId"
+                className="form-control"
+                value={formData.companyId}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="col-md-6">
               <label className="form-label">Company Name</label>
-              <input type="text" name="companyName" className="form-control" onChange={handleChange} />
+              <input
+                type="text"
+                name="companyName"
+                className="form-control"
+                value={formData.companyName}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div className="col-md-6">
               <label className="form-label">C.R Number</label>
-              <input type="text" name="crNumber" className="form-control" onChange={handleChange} />
+              <input
+                type="text"
+                name="crNumber"
+                className="form-control"
+                value={formData.crNumber}
+                onChange={handleChange}
+                required
+              />
             </div>
             <div className="col-md-6">
               <label className="form-label">VAT Number</label>
-              <input type="text" name="vatNumber" className="form-control" onChange={handleChange} />
+              <input
+                type="text"
+                name="vatNumber"
+                className="form-control"
+                value={formData.vatNumber}
+                onChange={handleChange}
+              />
             </div>
             <div className="col-md-6">
               <label className="form-label">Service Email</label>
-              <input type="email" name="serviceEmail" className="form-control" onChange={handleChange} />
+              <input
+                type="email"
+                name="serviceEmail"
+                className="form-control"
+                value={formData.serviceEmail}
+                onChange={handleChange}
+              />
             </div>
             <div className="col-md-6">
               <label className="form-label">GM Email</label>
-              <input type="email" name="gmEmail" className="form-control" onChange={handleChange} />
+              <input
+                type="email"
+                name="gmEmail"
+                className="form-control"
+                value={formData.gmEmail}
+                onChange={handleChange}
+              />
             </div>
             <div className="col-md-6">
               <label className="form-label">Currency Code</label>
-              <input type="text" name="currencyCode" className="form-control" onChange={handleChange} />
+              <input
+                type="text"
+                name="currencyCode"
+                className="form-control"
+                value={formData.currencyCode}
+                onChange={handleChange}
+              />
             </div>
             <div className="col-md-6">
               <label className="form-label">Time Zone</label>
-              <input type="text" name="timeZone" className="form-control" onChange={handleChange} />
+              <input
+                type="text"
+                name="timeZone"
+                className="form-control"
+                value={formData.timeZone}
+                onChange={handleChange}
+              />
             </div>
             <div className="col-md-6">
               <label className="form-label">Status</label>
-              <select name="status" className="form-select" onChange={handleChange}>
+              <select
+                name="status"
+                className="form-select"
+                value={formData.status}
+                onChange={handleChange}
+                required
+              >
                 <option value="">Select Status</option>
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
