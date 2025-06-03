@@ -86,9 +86,9 @@ const CustomerSurveyTable = ({ onAdd }) => {
         </div>
 
         {/* Table */}
-        <div className="table-responsive">
-          <table className="table table-bordered table-hover">
-            <thead className="table-dark">
+        <div className="table-responsive mb-4">
+          <table className="table ">
+            <thead className="product-table-header">
               <tr>
                 <th>S.No</th>
                 <th>Survey ID</th>

@@ -15,7 +15,7 @@ const [formData, setFormData] = useState({
   full_name: "",
   email: "",
   role: "Admin",
-  phone: "",            
+  mobile: "",            
   telephone: "",       
   city: "",
   country_code: "",
@@ -90,7 +90,7 @@ const payload = {
   email: safeTrim(formData.email) || null,
   role: formData.role || null,
   company: formData.company || null,
-  phone: safeTrim(formData.phone) || null,           
+  mobile: safeTrim(formData.mobile) || null,           
   telephone: safeTrim(formData.telephone) || null,   
   city: safeTrim(formData.city) || null,
   country_code: safeTrim(formData.country_code) || null,
@@ -131,300 +131,518 @@ const payload = {
 
 
   return (
-    <div className="user-management-container">
-      <h2 className="user-management-title">User Management</h2>
-      <p className="user-management-subtitle">
+//     <div className="user-management-container">
+//       <h2 className="user-management-title">User Management</h2>
+//       <p className="user-management-subtitle">
+//         Add, view and manage user accounts
+//       </p>
+
+//       <form className="user-management-form" onSubmit={handleSubmit}>
+//         {/* Basic Information */}
+//         <section className="user-management-section">
+//           <h3>Basic Information</h3>
+//           <div className="user-management-row">
+//             <label> UserName
+//               <input
+//                 type="text"
+//                 name="username"
+//                 placeholder="Enter username"
+//                 className="user-management-input"
+//                 value={formData.username}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </label>
+//             <label> Full Name
+//               <input
+//                 type="text"
+//                 name="full_name"
+//                 placeholder="Enter full name"
+//                 className="user-management-input"
+//                 value={formData.full_name}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </label>
+//             <label> Email
+//               <input
+//                 type="email"
+//                 name="email"
+//                 placeholder="user@example.com"
+//                 className="user-management-input"
+//                 value={formData.email}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </label>
+//             <label>
+//               Role Type
+//               <input
+//                 type="text"
+//                 name="role"
+//                 className="user-management-input"
+//                 value="Admin"
+//                 readOnly
+//               />
+//             </label>
+
+//             <label>
+//   Company
+//   <select
+//     name="company"
+//     className="user-management-input"
+//     value={formData.company}
+//     onChange={handleChange}
+//     required
+//   >
+//     <option value="">Select a company</option>
+//     {companies.map((company) => (
+//       <option key={company.company_id} value={company.company_id}>
+//         {company.company_name}
+//       </option>
+//     ))}
+//   </select>
+// </label>
+//           </div>
+//         </section>
+
+//         {/* Contact Information */}
+//         <section className="user-management-section">
+//           <h3>Contact Information</h3>
+//           <div className="user-management-row">
+//             <label> Mobile
+//               <input
+//                 type="text"
+//                 name="phone"
+//                 placeholder="Mobile (e.g., +1 123-456-7890)"
+//                 className="user-management-input"
+//                 value={formData.phone}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </label>
+//             <label> Telephone
+//               <input
+//                 type="text"
+//                 name="telephone"
+//                 placeholder="Telephone"
+//                 className="user-management-input"
+//                 value={formData.telephone}
+//                 onChange={handleChange}
+//               />
+//             </label>
+//             <label> City
+//               <input
+//                 type="text"
+//                 name="city"
+//                 placeholder="City"
+//                 className="user-management-input"
+//                 value={formData.city}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </label>
+//             <label> Country
+//               <input
+//                 type="text"
+//                 name="country_code"
+//                 placeholder="Country Code (e.g., +966)"
+//                 className="user-management-input"
+//                 value={formData.country_code}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </label>
+//           </div>
+//         </section>
+
+//         {/* Address */}
+//         <section className="user-management-section">
+//           <h3>Address</h3>
+//           <textarea
+//             name="address"
+//             className="user-management-textarea"
+//             placeholder="Enter complete postal address"
+//             value={formData.address}
+//             onChange={handleChange}
+//             required
+//           />
+//         </section>
+
+//         {/* Account Settings */}
+//         <section className="user-management-section">
+//           <h3>Account Settings</h3>
+
+//           <div className="user-management-row">
+//             <label> Current Password
+//               <input
+//                 type="password"
+//                 name="current_password"
+//                 placeholder="Enter password"
+//                 className="user-management-input"
+//                 value={formData.current_password}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </label>
+//             <label> Confirm Password
+//               <input
+//                 type="password"
+//                 name="last_password"
+//                 placeholder="Confirm password"
+//                 className="user-management-input"
+//                 value={formData.last_password}
+//                 onChange={handleChange}
+//                 required
+//               />
+//             </label>
+//             <div className="user-management-status">
+//               <label>
+//                 <input
+//                   type="radio"
+//                   name="status"
+//                   value="Active"
+//                   checked={formData.status === "Active"}
+//                   onChange={handleStatusChange}
+//                 />{" "}
+//                 Active
+//               </label>
+//               <label>
+//                 <input
+//                   type="radio"
+//                   name="status"
+//                   value="Inactive"
+//                   checked={formData.status === "Inactive"}
+//                   onChange={handleStatusChange}
+//                 />{" "}
+//                 Inactive
+//               </label>
+//               <label>
+//                 <input
+//                   type="radio"
+//                   name="status"
+//                   value="Blocked"
+//                   checked={formData.status === "Blocked"}
+//                   onChange={handleStatusChange}
+//                 />{" "}
+//                 Blocked
+//               </label>
+//             </div>
+//             {/* <label> Hourly Rate
+//             <input
+//               type="number"
+//               step="0.01"
+//               name="hourly_rate"
+//               placeholder="Hourly Rate (e.g., 0.00)"
+//               className="user-management-input"
+//               value={formData.hourly_rate}
+//               onChange={handleChange}
+//             />
+//             </label> */}
+//           </div>
+//         </section>
+
+//         {/* Security Questions */}
+//         {/* <section className="user-management-section">
+//           <h3>Security Questions</h3>
+//           <div className="user-management-row">
+//             <select
+//               name="security_question1"
+//               className="user-management-input"
+//               value={formData.security_question1}
+//               onChange={handleChange}
+//               required
+//             >
+//               <option value="">Select a security question</option>
+//               {SECURITY_QUESTION_CHOICES.map((q, i) => (
+//                 <option key={i} value={q}>
+//                   {q}
+//                 </option>
+//               ))}
+//             </select>
+//             <input
+//               type="text"
+//               name="answer1"
+//               placeholder="Answer"
+//               className="user-management-input"
+//               value={formData.answer1}
+//               onChange={handleChange}
+//               required
+//             />
+//             <select
+//               name="security_question2"
+//               className="user-management-input"
+//               value={formData.security_question2}
+//               onChange={handleChange}
+//               required
+//             >
+//               <option value="">Select a security question</option>
+//               {SECURITY_QUESTION_CHOICES.map((q, i) => (
+//                 <option key={i} value={q}>
+//                   {q}
+//                 </option>
+//               ))}
+//             </select>
+//             <input
+//               type="text"
+//               name="answer2"
+//               placeholder="Answer"
+//               className="user-management-input"
+//               value={formData.answer2}
+//               onChange={handleChange}
+//               required
+//             />
+//           </div>
+//         </section> */}
+
+//         {/* Additional Notes */}
+//         <section className="user-management-section">
+//           <h3>Additional Notes</h3>
+//           <textarea
+//             name="remarks"
+//             className="user-management-textarea"
+//             placeholder="Optional remarks or notes"
+//             value={formData.remarks}
+//             onChange={handleChange}
+//           />
+//         </section>
+
+//         {/* Buttons */}
+//         <div className="user-management-buttons">
+//           <button
+//             type="button"
+//             className="btn btn-outline-secondary user-management-cancel-btn"
+//             onClick={onCancel}
+//           >
+//             Cancel
+//           </button>
+//           <button
+//             type="submit"
+//             className="btn btn-primary user-management-save-btn"
+//           >
+//             Save User
+//           </button>
+//         </div>
+//       </form>
+//     </div>
+<div className="container mt-4  service-request-form">
+  <div className="card">
+    <div className="card-header">
+      <h5 className="mb-1">User Management</h5>
+      <h6 className="text" style={{ color: "#acaeb0" }}>
         Add, view and manage user accounts
-      </p>
-
-      <form className="user-management-form" onSubmit={handleSubmit}>
-        {/* Basic Information */}
-        <section className="user-management-section">
-          <h3>Basic Information</h3>
-          <div className="user-management-row">
-            <label> UserName
-              <input
-                type="text"
-                name="username"
-                placeholder="Enter username"
-                className="user-management-input"
-                value={formData.username}
-                onChange={handleChange}
-                required
-              />
-            </label>
-            <label> Full Name
-              <input
-                type="text"
-                name="full_name"
-                placeholder="Enter full name"
-                className="user-management-input"
-                value={formData.full_name}
-                onChange={handleChange}
-                required
-              />
-            </label>
-            <label> Email
-              <input
-                type="email"
-                name="email"
-                placeholder="user@example.com"
-                className="user-management-input"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </label>
-            <label>
-              Role Type
-              <input
-                type="text"
-                name="role"
-                className="user-management-input"
-                value="Admin"
-                readOnly
-              />
-            </label>
-
-            <label>
-  Company
-  <select
-    name="company"
-    className="user-management-input"
-    value={formData.company}
-    onChange={handleChange}
-    required
-  >
-    <option value="">Select a company</option>
-    {companies.map((company) => (
-      <option key={company.company_id} value={company.company_id}>
-        {company.company_name}
-      </option>
-    ))}
-  </select>
-</label>
+      </h6>
+    </div>
+    <div className="card-body">
+      <form onSubmit={handleSubmit}>
+        <div className="row g-3">
+          {/* Basic Information */}
+          <div className="col-md-4">
+            <label className="form-label">Username</label>
+            <input
+              type="text"
+              name="username"
+              placeholder="Enter username"
+              className="form-control"
+              value={formData.username}
+              onChange={handleChange}
+              required
+            />
           </div>
-        </section>
 
-        {/* Contact Information */}
-        <section className="user-management-section">
-          <h3>Contact Information</h3>
-          <div className="user-management-row">
-            <label> Mobile
-              <input
-                type="text"
-                name="phone"
-                placeholder="Mobile (e.g., +1 123-456-7890)"
-                className="user-management-input"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
-            </label>
-            <label> Telephone
-              <input
-                type="text"
-                name="telephone"
-                placeholder="Telephone"
-                className="user-management-input"
-                value={formData.telephone}
-                onChange={handleChange}
-              />
-            </label>
-            <label> City
-              <input
-                type="text"
-                name="city"
-                placeholder="City"
-                className="user-management-input"
-                value={formData.city}
-                onChange={handleChange}
-                required
-              />
-            </label>
-            <label> Country
-              <input
-                type="text"
-                name="country_code"
-                placeholder="Country Code (e.g., +966)"
-                className="user-management-input"
-                value={formData.country_code}
-                onChange={handleChange}
-                required
-              />
-            </label>
+          <div className="col-md-4">
+            <label className="form-label">Full Name</label>
+            <input
+              type="text"
+              name="full_name"
+              placeholder="Enter full name"
+              className="form-control"
+              value={formData.full_name}
+              onChange={handleChange}
+              required
+            />
           </div>
-        </section>
 
-        {/* Address */}
-        <section className="user-management-section">
-          <h3>Address</h3>
-          <textarea
-            name="address"
-            className="user-management-textarea"
-            placeholder="Enter complete postal address"
-            value={formData.address}
-            onChange={handleChange}
-            required
-          />
-        </section>
+          <div className="col-md-4">
+            <label className="form-label">Email</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="user@example.com"
+              className="form-control"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        {/* Account Settings */}
-        <section className="user-management-section">
-          <h3>Account Settings</h3>
+          <div className="col-md-4">
+            <label className="form-label">Role </label>
+            <input
+              type="text"
+              name="role"
+              className="form-control"
+              value="Admin"
+              readOnly
+            />
+          </div>
 
-          <div className="user-management-row">
-            <label> Current Password
-              <input
-                type="password"
-                name="current_password"
-                placeholder="Enter password"
-                className="user-management-input"
-                value={formData.current_password}
-                onChange={handleChange}
-                required
-              />
-            </label>
-            <label> Confirm Password
-              <input
-                type="password"
-                name="last_password"
-                placeholder="Confirm password"
-                className="user-management-input"
-                value={formData.last_password}
-                onChange={handleChange}
-                required
-              />
-            </label>
-            <div className="user-management-status">
-              <label>
-                <input
-                  type="radio"
-                  name="status"
-                  value="Active"
-                  checked={formData.status === "Active"}
-                  onChange={handleStatusChange}
-                />{" "}
-                Active
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="status"
-                  value="Inactive"
-                  checked={formData.status === "Inactive"}
-                  onChange={handleStatusChange}
-                />{" "}
-                Inactive
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="status"
-                  value="Blocked"
-                  checked={formData.status === "Blocked"}
-                  onChange={handleStatusChange}
-                />{" "}
-                Blocked
-              </label>
+          <div className="col-md-4">
+            <label className="form-label">Company</label>
+            <select
+              name="company"
+              className="form-control"
+              value={formData.company}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select a company</option>
+              {companies.map((company) => (
+                <option key={company.company_id} value={company.company_id}>
+                  {company.company_name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Contact Information */}
+          <div className="col-md-4">
+            <label className="form-label">Mobile</label>
+            <input
+              type="text"
+              name="mobile"
+              placeholder="Mobile (e.g., +1 123-456-7890)"
+              className="form-control"
+              value={formData.mobile}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="col-md-4">
+            <label className="form-label">Telephone</label>
+            <input
+              type="text"
+              name="telephone"
+              placeholder="Telephone"
+              className="form-control"
+              value={formData.telephone}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="col-md-4">
+            <label className="form-label">City</label>
+            <input
+              type="text"
+              name="city"
+              placeholder="City"
+              className="form-control"
+              value={formData.city}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="col-md-4">
+            <label className="form-label">Country Code</label>
+            <input
+              type="text"
+              name="country_code"
+              placeholder="Country Code (e.g., +966)"
+              className="form-control"
+              value={formData.country_code}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Address */}
+          <div className="col-12">
+            <label className="form-label">Address</label>
+            <textarea
+              name="address"
+              className="form-control"
+              placeholder="Enter complete postal address"
+              value={formData.address}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Account Settings */}
+          <div className="col-md-4">
+            <label className="form-label">Current Password</label>
+            <input
+              type="password"
+              name="current_password"
+              placeholder="Enter password"
+              className="form-control"
+              value={formData.current_password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="col-md-4">
+            <label className="form-label">Confirm Password</label>
+            <input
+              type="password"
+              name="last_password"
+              placeholder="Confirm password"
+              className="form-control"
+              value={formData.last_password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="col-md-4">
+            <label className="form-label">Status</label>
+            <div className="d-flex gap-3">
+              {["Active", "Inactive", "Blocked"].map((s) => (
+                <div key={s} className="form-check form-check-inline">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="status"
+                    value={s}
+                    checked={formData.status === s}
+                    onChange={handleStatusChange}
+                  />
+                  <label className="form-check-label">{s}</label>
+                </div>
+              ))}
             </div>
-            {/* <label> Hourly Rate
-            <input
-              type="number"
-              step="0.01"
-              name="hourly_rate"
-              placeholder="Hourly Rate (e.g., 0.00)"
-              className="user-management-input"
-              value={formData.hourly_rate}
-              onChange={handleChange}
-            />
-            </label> */}
           </div>
-        </section>
 
-        {/* Security Questions */}
-        {/* <section className="user-management-section">
-          <h3>Security Questions</h3>
-          <div className="user-management-row">
-            <select
-              name="security_question1"
-              className="user-management-input"
-              value={formData.security_question1}
+          {/* Additional Notes */}
+          <div className="col-12">
+            <label className="form-label">Additional Notes</label>
+            <textarea
+              name="remarks"
+              className="form-control"
+              placeholder="Optional remarks or notes"
+              value={formData.remarks}
               onChange={handleChange}
-              required
-            >
-              <option value="">Select a security question</option>
-              {SECURITY_QUESTION_CHOICES.map((q, i) => (
-                <option key={i} value={q}>
-                  {q}
-                </option>
-              ))}
-            </select>
-            <input
-              type="text"
-              name="answer1"
-              placeholder="Answer"
-              className="user-management-input"
-              value={formData.answer1}
-              onChange={handleChange}
-              required
-            />
-            <select
-              name="security_question2"
-              className="user-management-input"
-              value={formData.security_question2}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select a security question</option>
-              {SECURITY_QUESTION_CHOICES.map((q, i) => (
-                <option key={i} value={q}>
-                  {q}
-                </option>
-              ))}
-            </select>
-            <input
-              type="text"
-              name="answer2"
-              placeholder="Answer"
-              className="user-management-input"
-              value={formData.answer2}
-              onChange={handleChange}
-              required
             />
           </div>
-        </section> */}
 
-        {/* Additional Notes */}
-        <section className="user-management-section">
-          <h3>Additional Notes</h3>
-          <textarea
-            name="remarks"
-            className="user-management-textarea"
-            placeholder="Optional remarks or notes"
-            value={formData.remarks}
-            onChange={handleChange}
-          />
-        </section>
-
-        {/* Buttons */}
-        <div className="user-management-buttons">
-          <button
-            type="button"
-            className="btn btn-outline-secondary user-management-cancel-btn"
-            onClick={onCancel}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="btn btn-primary user-management-save-btn"
-          >
-            Save User
-          </button>
+          {/* Buttons */}
+          <div className="d-flex justify-content-center mt-3 gap-3">
+            <button type="submit" className="submit-btn">
+              Save User
+            </button>
+            <button type="button" className="btn btn-secondary" onClick={onCancel}>
+              Cancel
+            </button>
+          </div>
         </div>
       </form>
     </div>
+  </div>
+</div>
+
   );
 };
 

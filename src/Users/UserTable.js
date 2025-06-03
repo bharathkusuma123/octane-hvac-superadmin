@@ -205,7 +205,7 @@ const UserTable = ({ onAdd }) => {
   const totalPages = Math.ceil(filteredUsers.length / entriesPerPage);
 
   return (
-    <div className="user-management-container">
+    <div className="container-fluid user-management-container">
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
         <div>
@@ -241,15 +241,14 @@ const UserTable = ({ onAdd }) => {
       </div>
 
       {/* Table */}
-      <div className="table-responsive">
-        <table className="table table-striped table-hover">
-          <thead className="table-dark">
+      <div className="table-responsive mb-4">
+        <table className="table ">
+          <thead className="product-table-header">
             <tr>
               <th>S.No</th>
               <th>User ID</th>
               <th>Username</th>
               <th>Full Name</th>
-               <th>Company</th>
               <th>Email</th>
               <th>Mobile</th>
               <th>Telephone</th>
@@ -258,7 +257,6 @@ const UserTable = ({ onAdd }) => {
               <th>Status</th>
               <th>Remarks</th>
               <th>Role</th>
-              <th>Hourly Rate</th>
               <th>Address</th>
               <th>Created At</th>
               <th>Updated At</th>
@@ -274,10 +272,9 @@ const UserTable = ({ onAdd }) => {
                   <td>{user.user_id}</td>
                   <td>{user.username}</td>
                   <td>{user.full_name}</td>
-                   <td>{user.company || "NA"}</td>
                   <td>{user.email}</td>
-                  <td>{user.phone}</td>
-                  <td>{user.phone}</td>
+                  <td>{user.mobile}</td>
+                  <td>{user.telephone}</td>
                   <td>{user.city}</td>
                   <td>{user.country_code}</td>
                   <td>
@@ -291,7 +288,6 @@ const UserTable = ({ onAdd }) => {
                   </td>
                   <td>{user.remarks}</td>
                   <td>{user.role}</td>
-                  <td>{user.hourly_rate}</td>
                   <td>{user.address}</td>
                   <td>{new Date(user.created_at).toLocaleString()}</td>
                   <td>{new Date(user.updated_at).toLocaleString()}</td>
