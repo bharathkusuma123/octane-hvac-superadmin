@@ -18,6 +18,8 @@ import CustomerSatisfactionSurvey from "./CustomerSatisfactionSurvey/CustomerSat
 import ServiceCompletion from "./ServiceCompletionForm/ServiceCompletion";
 import UserManagement from "./Users/UserManagement"
 
+import logo from "./Logos/hvac-logo-new.jpg";
+
 // 🔹 TopNavbar
 const TopNavbar = () => {
   const navigate = useNavigate();
@@ -42,7 +44,13 @@ const TopNavbar = () => {
   return (
     <nav className="top-navbar">
       <div className="nav-container">
-        <div className="nav-brand">Super Admin Panel</div>
+         <div className="nav-brand">
+            <img
+                src={logo}
+                alt="Company Logo"
+                style={{ width: "100px", height: "50px" }}
+            />
+          </div>
         <div className="nav-links">
           {navItems.map((item) => (
             <Link
