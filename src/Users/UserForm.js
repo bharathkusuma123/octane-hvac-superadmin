@@ -99,8 +99,8 @@ const payload = {
   password: formData.current_password || null,
   status: formData.status || "Active",
   remarks: safeTrim(formData.remarks) || null,
-  created_by: formData.created_by || "admin",
-  updated_by: formData.updated_by || "admin",
+  created_by: formData.created_by || "Super Admin",
+  updated_by: formData.updated_by || "Super Admin",
 };
 
 
