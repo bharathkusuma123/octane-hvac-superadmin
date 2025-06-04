@@ -11,19 +11,21 @@ import {
 } from "react-bootstrap";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import logo from "../Logos/hvac-logo-new.jpg";
+import "./Login.css"
 
 const LoginCard = ({
   title,
-   username,            // renamed prop
+  username, // renamed prop
   password,
   showPassword,
-   setUsername,         // renamed setter
+  setUsername, // renamed setter
   setPassword,
   setShowPassword,
   handleSubmit,
   error,
 }) => {
   return (
+    <div className="d-flex align-items-center justify-content-center min-vh-100">
     <Container className="mt-5">
       <Row className="justify-content-center">
         <Col md={6} lg={4}>
@@ -41,7 +43,7 @@ const LoginCard = ({
               {error && <Alert variant="danger">{error}</Alert>}
 
               <Form onSubmit={handleSubmit}>
-               <Form.Group className="mb-3">
+                <Form.Group className="mb-3">
                   <Form.Label>Username</Form.Label>
                   <Form.Control
                     type="text"
@@ -71,7 +73,7 @@ const LoginCard = ({
                   </InputGroup>
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="w-100">
+                 <Button variant="primary" type="submit" className="loginButton shadow">
                   Login
                 </Button>
               </Form>
@@ -80,6 +82,7 @@ const LoginCard = ({
         </Col>
       </Row>
     </Container>
+    </div>
   );
 };
 
