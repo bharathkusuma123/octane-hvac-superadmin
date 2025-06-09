@@ -60,8 +60,24 @@ const CompanyTable = ({ onAdd }) => {
   );
   const totalPages = Math.ceil(filteredCompanies.length / entriesPerPage);
 
+    const formatDate = (dateString) => {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Invalid date';
+      
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      
+      return `${day}/${month}/${year}`;
+    } catch (e) {
+      return 'Invalid date';
+    }
+  };
+
   return (
-    <div className="container my-4">
+    <div className="container-fluid my-4">
       <div className="company-table-box p-4">
         {/* Header */}
         <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
@@ -155,16 +171,8 @@ const CompanyTable = ({ onAdd }) => {
                           {company.status}
                         </span>
                       </td>
-                      <td>
-                        {company.created_at
-                          ? new Date(company.created_at).toLocaleString()
-                          : ""}
-                      </td>
-                      <td>
-                        {company.updated_at
-                          ? new Date(company.updated_at).toLocaleString()
-                          : ""}
-                      </td>
+                             <td>{formatDate(company.created_at)}</td>
+                      <td>{formatDate(company.updated_at)}</td>
                       <td>{company.created_by}</td>
                       <td>{company.updated_by}</td>
                     </tr>

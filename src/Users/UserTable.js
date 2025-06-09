@@ -203,7 +203,21 @@ const UserTable = ({ onAdd }) => {
   const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstEntry, indexOfLastEntry);
   const totalPages = Math.ceil(filteredUsers.length / entriesPerPage);
-
+  const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Invalid date';
+      
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      
+      return `${day}/${month}/${year}`;
+    } catch (e) {
+      return 'Invalid date';
+    }
+  };
   return (
     <div className="container-fluid user-management-container">
       {/* Header */}
@@ -289,8 +303,10 @@ const UserTable = ({ onAdd }) => {
                   <td>{user.remarks}</td>
                   <td>{user.role}</td>
                   <td>{user.address}</td>
-                  <td>{new Date(user.created_at).toLocaleString()}</td>
-                  <td>{new Date(user.updated_at).toLocaleString()}</td>
+                  {/* <td>{new Date(user.created_at).toLocaleString()}</td>
+                  <td>{new Date(user.updated_at).toLocaleString()}</td> */}
+                       <td>{formatDate(user.created_at)}</td>
+                    <td>{formatDate(user.updated_at)}</td>
                   <td>{user.created_by}</td>
                   <td>{user.updated_by}</td>
                 </tr>

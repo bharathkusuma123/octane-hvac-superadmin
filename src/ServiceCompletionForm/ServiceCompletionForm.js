@@ -110,7 +110,7 @@ const ServiceCompletionForm = ({ onCancel, onSave }) => {
   <div className="card">
     <div className="card-header">
       <h5 className="mb-1">Service Completion</h5>
-      <h6 className="text" style={{ color: "#acaeb0" }}>
+      <h6 className="text" style={{ color: "white" }}>
         Fill in the service assignment details below
       </h6>
     </div>

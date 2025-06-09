@@ -176,7 +176,7 @@ const CompanyForm = ({ onCancel, onSave }) => {
   <div className="card">
     <div className="card-header">
       <h5 className="mb-1">Company Information</h5>
-      <h6 className="text" style={{ color: "#acaeb0" }}>
+      <h6 className="text" style={{ color: "white" }}>
         Fill in the company details below
       </h6>
     </div>

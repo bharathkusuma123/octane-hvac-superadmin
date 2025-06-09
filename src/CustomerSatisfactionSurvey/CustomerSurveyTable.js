@@ -47,8 +47,24 @@ const CustomerSurveyTable = ({ onAdd }) => {
   const currentSurveys = filteredSurveys.slice(indexOfFirstEntry, indexOfLastEntry);
   const totalPages = Math.ceil(filteredSurveys.length / entriesPerPage);
 
+    const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Invalid date';
+      
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      
+      return `${day}/${month}/${year}`;
+    } catch (e) {
+      return 'Invalid date';
+    }
+  };
+
   return (
-    <div className="container my-4">
+    <div className="container-fluid my-4">
       <div className="p-4 shadow-sm rounded customer-survey-container">
         <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
           <div>
@@ -119,9 +135,13 @@ const CustomerSurveyTable = ({ onAdd }) => {
                     <td>{entry.engineer_rating_reason}</td>
                     <td>{entry.service_rating_reason}</td>
                     <td>{entry.suggestions}</td>
-                    <td>{new Date(entry.submitted_at).toLocaleString()}</td>
+                                        <td>{formatDate(entry.submitted_at)}</td>
+
+                    {/* <td>{new Date(entry.submitted_at).toLocaleString()}</td> */}
                     <td>{entry.created_by}</td>
-                    <td>{new Date(entry.updated_at).toLocaleString()}</td>
+                    {/* <td>{new Date(entry.updated_at).toLocaleString()}</td> */}
+                                        <td>{formatDate(entry.updated_at)}</td>
+
                   </tr>
                 ))
               ) : (

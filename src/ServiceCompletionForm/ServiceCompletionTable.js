@@ -50,8 +50,25 @@ const ServiceCompletionTable = ({ onAdd }) => {
   const currentData = filteredData.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(filteredData.length / entriesPerPage);
 
+    const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Invalid date';
+      
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      
+      return `${day}/${month}/${year}`;
+    } catch (e) {
+      return 'Invalid date';
+    }
+  };
+  
+
   return (
-    <div className="container my-4">
+    <div className="container-fluid my-4">
       <div className="service-wrapper p-4">
         {/* Header */}
         <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
@@ -117,11 +134,11 @@ const ServiceCompletionTable = ({ onAdd }) => {
                     <td>{item.service_item_id}</td>
                     <td>{item.component_id}</td>
                     <td>{item.component_serial_number}</td>
-                    <td>{item.warranty_start_date}</td>
-                    <td>{item.warranty_end_date}</td>
+                <td>{formatDate(item.warranty_start_date)}</td>
+                    <td>{formatDate(item.warranty_end_date)}</td>
                     <td>{item.vendor_id}</td>
-                    <td>{new Date(item.created_at).toLocaleString()}</td>
-                    <td>{new Date(item.updated_at).toLocaleString()}</td>
+               <td>{formatDate(item.created_at)}</td>
+                    <td>{formatDate(item.updated_at)}</td>
                     <td>{item.created_by}</td>
                     <td>{item.updated_by}</td>
                   </tr>

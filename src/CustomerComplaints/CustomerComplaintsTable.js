@@ -51,8 +51,25 @@ const CustomerComplaintsTable = ({ onAdd }) => {
   const currentComplaints = filteredComplaints.slice(indexOfFirstEntry, indexOfLastEntry);
   const totalPages = Math.ceil(filteredComplaints.length / entriesPerPage);
 
+
+  // Add this date formatting function
+  const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Invalid date';
+      
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      
+      return `${day}/${month}/${year}`;
+    } catch (e) {
+      return 'Invalid date';
+    }
+  };
   return (
-    <div className="container my-4">
+    <div className="container-fluid my-4">
       <div className="complaints-container p-4 rounded shadow-sm">
         {/* Header */}
         <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
@@ -120,7 +137,9 @@ const CustomerComplaintsTable = ({ onAdd }) => {
                     <td>{item.customer_id}</td>
                     <td>{item.service_item_id}</td>
                     <td>{item.complaint_details}</td>
-                    <td>{new Date(item.complaint_date).toLocaleString()}</td>
+                    {/* <td>{new Date(item.complaint_date).toLocaleString()}</td> */}
+                                        <td>{formatDate(item.complaint_date)}</td>
+
                     <td>{item.status}</td>
                     <td>{item.escalation_level}</td>
                     <td>{item.service_manager_email || "-"}</td>
@@ -128,7 +147,9 @@ const CustomerComplaintsTable = ({ onAdd }) => {
                     <td>{item.resolution_details || "-"}</td>
                     <td>{item.resolved_at ? new Date(item.resolved_at).toLocaleString() : "-"}</td>
                     <td>{item.created_by}</td>
-                    <td>{new Date(item.updated_at).toLocaleString()}</td>
+                    {/* <td>{new Date(item.updated_at).toLocaleString()}</td> */}
+                                        <td>{formatDate(item.updated_at)}</td>
+
                   </tr>
                 ))
               ) : (
