@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginCard from "./LoginCard";
 import axios from "axios";
+import { AuthContext } from "../AuthContext/AuthContext";
 
 const SuperAdminLogin = () => {
   const [username, setUsername] = useState("");   // Changed from email to mobileNo
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-
+const { login } = useContext(AuthContext)
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -24,11 +25,15 @@ const SuperAdminLogin = () => {
       const user = response.data.data;
 
       if (user.role === "Super Admin") {
-        localStorage.setItem("userRole", "superadmin");
-      
-      navigate("/superadmin/company-information");
+        // Use context login instead of localStorage directly
+        login("superadmin", user.user_id, {
+          username: user.username,
+          default_company: user.default_company,
+        });
+
+        navigate("/superadmin/company-information");
       } else {
-        setError("User is not an Super Admin");
+        setError("User is not a Super Admin");
       }
     } catch (err) {
       console.error("Login error:", err);

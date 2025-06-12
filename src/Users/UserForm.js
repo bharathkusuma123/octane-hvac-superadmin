@@ -1,5 +1,6 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect,useState, useContext } from "react";
 import "./UserManagement.css";
+import { AuthContext } from "../AuthContext/AuthContext";
 
 const SECURITY_QUESTION_CHOICES = [
   "What is your mother’s maiden name?",
@@ -10,6 +11,7 @@ const SECURITY_QUESTION_CHOICES = [
 ];
 
 const UserForm = ({ onCancel, onSave }) => {
+  const { userId, userRole } = useContext(AuthContext);
 const [formData, setFormData] = useState({
   username: "",
   full_name: "",
@@ -24,9 +26,9 @@ const [formData, setFormData] = useState({
   last_password: "",
   status: "Active",
   remarks: "",
-  created_by: "Admin",
-  updated_by: "Admin",
-   company: "",
+   default_company: "",
+    switch_company_allowed: false,
+    company: [], 
 });
 const [companies, setCompanies] = useState([]);
 
@@ -85,12 +87,12 @@ const [companies, setCompanies] = useState([]);
 
 const payload = {
   user_id,
-  companies: formData.company ? [formData.company] : [],
+  companies: formData.company && formData.company.length > 0 ? formData.company : [],
   username: safeTrim(formData.username) || null,
   full_name: safeTrim(formData.full_name) || null,
   email: safeTrim(formData.email) || null,
   role: formData.role || null,
-  company: formData.company || null,
+  default_company: formData.default_company || null,
   mobile: safeTrim(formData.mobile) || null,           
   telephone: safeTrim(formData.telephone) || null,   
   city: safeTrim(formData.city) || null,
@@ -100,8 +102,10 @@ const payload = {
   password: formData.current_password || null,
   status: formData.status || "Active",
   remarks: safeTrim(formData.remarks) || null,
-  created_by: formData.created_by || "Super Admin",
-  updated_by: formData.updated_by || "Super Admin",
+  created_by: userId ,
+updated_by: userId ,
+
+   switch_company_allowed: formData.switch_company_allowed,
 };
 
 
@@ -132,300 +136,6 @@ const payload = {
 
 
   return (
-//     <div className="user-management-container">
-//       <h2 className="user-management-title">User Management</h2>
-//       <p className="user-management-subtitle">
-//         Add, view and manage user accounts
-//       </p>
-
-//       <form className="user-management-form" onSubmit={handleSubmit}>
-//         {/* Basic Information */}
-//         <section className="user-management-section">
-//           <h3>Basic Information</h3>
-//           <div className="user-management-row">
-//             <label> UserName
-//               <input
-//                 type="text"
-//                 name="username"
-//                 placeholder="Enter username"
-//                 className="user-management-input"
-//                 value={formData.username}
-//                 onChange={handleChange}
-//                 required
-//               />
-//             </label>
-//             <label> Full Name
-//               <input
-//                 type="text"
-//                 name="full_name"
-//                 placeholder="Enter full name"
-//                 className="user-management-input"
-//                 value={formData.full_name}
-//                 onChange={handleChange}
-//                 required
-//               />
-//             </label>
-//             <label> Email
-//               <input
-//                 type="email"
-//                 name="email"
-//                 placeholder="user@example.com"
-//                 className="user-management-input"
-//                 value={formData.email}
-//                 onChange={handleChange}
-//                 required
-//               />
-//             </label>
-//             <label>
-//               Role Type
-//               <input
-//                 type="text"
-//                 name="role"
-//                 className="user-management-input"
-//                 value="Admin"
-//                 readOnly
-//               />
-//             </label>
-
-//             <label>
-//   Company
-//   <select
-//     name="company"
-//     className="user-management-input"
-//     value={formData.company}
-//     onChange={handleChange}
-//     required
-//   >
-//     <option value="">Select a company</option>
-//     {companies.map((company) => (
-//       <option key={company.company_id} value={company.company_id}>
-//         {company.company_name}
-//       </option>
-//     ))}
-//   </select>
-// </label>
-//           </div>
-//         </section>
-
-//         {/* Contact Information */}
-//         <section className="user-management-section">
-//           <h3>Contact Information</h3>
-//           <div className="user-management-row">
-//             <label> Mobile
-//               <input
-//                 type="text"
-//                 name="phone"
-//                 placeholder="Mobile (e.g., +1 123-456-7890)"
-//                 className="user-management-input"
-//                 value={formData.phone}
-//                 onChange={handleChange}
-//                 required
-//               />
-//             </label>
-//             <label> Telephone
-//               <input
-//                 type="text"
-//                 name="telephone"
-//                 placeholder="Telephone"
-//                 className="user-management-input"
-//                 value={formData.telephone}
-//                 onChange={handleChange}
-//               />
-//             </label>
-//             <label> City
-//               <input
-//                 type="text"
-//                 name="city"
-//                 placeholder="City"
-//                 className="user-management-input"
-//                 value={formData.city}
-//                 onChange={handleChange}
-//                 required
-//               />
-//             </label>
-//             <label> Country
-//               <input
-//                 type="text"
-//                 name="country_code"
-//                 placeholder="Country Code (e.g., +966)"
-//                 className="user-management-input"
-//                 value={formData.country_code}
-//                 onChange={handleChange}
-//                 required
-//               />
-//             </label>
-//           </div>
-//         </section>
-
-//         {/* Address */}
-//         <section className="user-management-section">
-//           <h3>Address</h3>
-//           <textarea
-//             name="address"
-//             className="user-management-textarea"
-//             placeholder="Enter complete postal address"
-//             value={formData.address}
-//             onChange={handleChange}
-//             required
-//           />
-//         </section>
-
-//         {/* Account Settings */}
-//         <section className="user-management-section">
-//           <h3>Account Settings</h3>
-
-//           <div className="user-management-row">
-//             <label> Current Password
-//               <input
-//                 type="password"
-//                 name="current_password"
-//                 placeholder="Enter password"
-//                 className="user-management-input"
-//                 value={formData.current_password}
-//                 onChange={handleChange}
-//                 required
-//               />
-//             </label>
-//             <label> Confirm Password
-//               <input
-//                 type="password"
-//                 name="last_password"
-//                 placeholder="Confirm password"
-//                 className="user-management-input"
-//                 value={formData.last_password}
-//                 onChange={handleChange}
-//                 required
-//               />
-//             </label>
-//             <div className="user-management-status">
-//               <label>
-//                 <input
-//                   type="radio"
-//                   name="status"
-//                   value="Active"
-//                   checked={formData.status === "Active"}
-//                   onChange={handleStatusChange}
-//                 />{" "}
-//                 Active
-//               </label>
-//               <label>
-//                 <input
-//                   type="radio"
-//                   name="status"
-//                   value="Inactive"
-//                   checked={formData.status === "Inactive"}
-//                   onChange={handleStatusChange}
-//                 />{" "}
-//                 Inactive
-//               </label>
-//               <label>
-//                 <input
-//                   type="radio"
-//                   name="status"
-//                   value="Blocked"
-//                   checked={formData.status === "Blocked"}
-//                   onChange={handleStatusChange}
-//                 />{" "}
-//                 Blocked
-//               </label>
-//             </div>
-//             {/* <label> Hourly Rate
-//             <input
-//               type="number"
-//               step="0.01"
-//               name="hourly_rate"
-//               placeholder="Hourly Rate (e.g., 0.00)"
-//               className="user-management-input"
-//               value={formData.hourly_rate}
-//               onChange={handleChange}
-//             />
-//             </label> */}
-//           </div>
-//         </section>
-
-//         {/* Security Questions */}
-//         {/* <section className="user-management-section">
-//           <h3>Security Questions</h3>
-//           <div className="user-management-row">
-//             <select
-//               name="security_question1"
-//               className="user-management-input"
-//               value={formData.security_question1}
-//               onChange={handleChange}
-//               required
-//             >
-//               <option value="">Select a security question</option>
-//               {SECURITY_QUESTION_CHOICES.map((q, i) => (
-//                 <option key={i} value={q}>
-//                   {q}
-//                 </option>
-//               ))}
-//             </select>
-//             <input
-//               type="text"
-//               name="answer1"
-//               placeholder="Answer"
-//               className="user-management-input"
-//               value={formData.answer1}
-//               onChange={handleChange}
-//               required
-//             />
-//             <select
-//               name="security_question2"
-//               className="user-management-input"
-//               value={formData.security_question2}
-//               onChange={handleChange}
-//               required
-//             >
-//               <option value="">Select a security question</option>
-//               {SECURITY_QUESTION_CHOICES.map((q, i) => (
-//                 <option key={i} value={q}>
-//                   {q}
-//                 </option>
-//               ))}
-//             </select>
-//             <input
-//               type="text"
-//               name="answer2"
-//               placeholder="Answer"
-//               className="user-management-input"
-//               value={formData.answer2}
-//               onChange={handleChange}
-//               required
-//             />
-//           </div>
-//         </section> */}
-
-//         {/* Additional Notes */}
-//         <section className="user-management-section">
-//           <h3>Additional Notes</h3>
-//           <textarea
-//             name="remarks"
-//             className="user-management-textarea"
-//             placeholder="Optional remarks or notes"
-//             value={formData.remarks}
-//             onChange={handleChange}
-//           />
-//         </section>
-
-//         {/* Buttons */}
-//         <div className="user-management-buttons">
-//           <button
-//             type="button"
-//             className="btn btn-outline-secondary user-management-cancel-btn"
-//             onClick={onCancel}
-//           >
-//             Cancel
-//           </button>
-//           <button
-//             type="submit"
-//             className="btn btn-primary user-management-save-btn"
-//           >
-//             Save User
-//           </button>
-//         </div>
-//       </form>
-//     </div>
 <div className="container mt-4  service-request-form">
   <div className="card">
     <div className="card-header">
@@ -433,6 +143,10 @@ const payload = {
       <h6 className="text" style={{ color: "white" }}>
         Add, view and manage user accounts
       </h6>
+
+       <h6 className="text" style={{ color: "white" }}>
+  Logged in as: <strong>{userId},{userRole}</strong>
+</h6>
     </div>
     <div className="card-body">
       <form onSubmit={handleSubmit}>
@@ -489,11 +203,11 @@ const payload = {
           </div>
 
           <div className="col-md-4">
-            <label className="form-label">Company</label>
+            <label className="form-label">Default Company</label>
             <select
-              name="company"
+              name="default_company"
               className="form-control"
-              value={formData.company}
+              value={formData.default_company}
               onChange={handleChange}
               required
             >
@@ -505,6 +219,87 @@ const payload = {
               ))}
             </select>
           </div>
+
+          <div className="col-md-4 d-flex align-items-center mt-2">
+  <div className="col-md-4 mt-2">
+  <label className="form-label me-2">Switch Company</label>
+  <div className="d-flex gap-4">
+    <div className="form-check">
+      <input
+        className="form-check-input"
+        type="radio"
+        name="switchCompany"
+        id="switchYes"
+        value="yes"
+        checked={formData.switch_company_allowed === true}
+        onChange={() =>
+          setFormData((prev) => ({
+            ...prev,
+            switch_company_allowed: true,
+          }))
+        }
+      />
+      <label className="form-check-label" htmlFor="switchYes">
+        Yes
+      </label>
+    </div>
+
+    <div className="form-check">
+      <input
+        className="form-check-input"
+        type="radio"
+        name="switchCompany"
+        id="switchNo"
+        value="no"
+        checked={formData.switch_company_allowed === false}
+        onChange={() =>
+          setFormData((prev) => ({
+            ...prev,
+            switch_company_allowed: false,
+          }))
+        }
+      />
+      <label className="form-check-label" htmlFor="switchNo">
+        No
+      </label>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+</div>
+
+
+{formData.switch_company_allowed && (
+  <div className="col-md-4 mt-2">
+    <label className="form-label">Select Companies</label>
+    <select
+      multiple
+      className="form-control"
+      style={{ height: "120px" }} // optional for better UI
+      value={formData.company}
+      onChange={(e) => {
+        const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+        setFormData((prev) => ({
+          ...prev,
+          company: selected,
+        }));
+      }}
+    >
+      {companies.map((company) => (
+        <option key={company.company_id} value={company.company_id}>
+          {company.company_name}
+        </option>
+      ))}
+    </select>
+  </div>
+)}
+
+
 
           {/* Contact Information */}
           <div className="col-md-4">

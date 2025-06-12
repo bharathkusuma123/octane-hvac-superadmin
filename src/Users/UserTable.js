@@ -272,8 +272,10 @@ const UserTable = ({ onAdd }) => {
               <th>Remarks</th>
               <th>Role</th>
               <th>Address</th>
-              <th>Created At</th>
-              <th>Updated At</th>
+              {/* <th>Created At</th>
+              <th>Updated At</th> */}
+              <th>Default Company</th>
+              <th>Accesible Companies</th>
               <th>Created By</th>
               <th>Updated By</th>
             </tr>
@@ -305,8 +307,8 @@ const UserTable = ({ onAdd }) => {
                   <td>{user.address}</td>
                   {/* <td>{new Date(user.created_at).toLocaleString()}</td>
                   <td>{new Date(user.updated_at).toLocaleString()}</td> */}
-                       <td>{formatDate(user.created_at)}</td>
-                    <td>{formatDate(user.updated_at)}</td>
+                     <td>{user.default_company}</td>
+                    <td>{user.companies && user.companies.join(', ')}</td>
                   <td>{user.created_by}</td>
                   <td>{user.updated_by}</td>
                 </tr>

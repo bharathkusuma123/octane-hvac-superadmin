@@ -10,6 +10,8 @@ import {
   Link,
 } from "react-router-dom";
 import "./App.css";
+import { AuthContext } from "./AuthContext/AuthContext";
+import AuthProvider from "./AuthContext/AuthContext";
 
 import SuperAdminLogin from "./Login/Login";
 import CompanyInformation from "./Company/CompanyInformation";
@@ -92,6 +94,7 @@ const ProtectedRoute = ({ children }) => {
 // 🔁 Main App
 function App() {
   return (
+      <AuthProvider>
     <Router>
       <Routes>
         <Route path="/" element={<SuperAdminLogin />} />
@@ -140,6 +143,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
+    </AuthProvider>
   );
 }
 

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext} from "react";
 import axios from "axios";
 import "./CompanyInformation.css";
+import { AuthContext } from "../AuthContext/AuthContext";
 
 const CompanyForm = ({ onCancel, onSave }) => {
   const [formData, setFormData] = useState({
@@ -14,7 +15,7 @@ const CompanyForm = ({ onCancel, onSave }) => {
     timeZone: "",
     status: "",
   });
-
+ const { userId, userRole } = useContext(AuthContext);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -37,8 +38,8 @@ const CompanyForm = ({ onCancel, onSave }) => {
   status: formData.status, // Should be "Active" or "Inactive"
   created_at: currentTime,
   updated_at: currentTime,
-  created_by: "Super Admin",
-  updated_by: "Super Admin",
+  created_by: userId,
+  updated_by: userId,
 };
 
 
@@ -179,6 +180,9 @@ const CompanyForm = ({ onCancel, onSave }) => {
       <h6 className="text" style={{ color: "white" }}>
         Fill in the company details below
       </h6>
+      <h6 className="text" style={{ color: "white" }}>
+  Logged in as: <strong>{userId},{userRole}</strong>
+</h6>
     </div>
     <div className="card-body">
       <form onSubmit={handleSubmit}>
