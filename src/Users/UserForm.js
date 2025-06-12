@@ -85,6 +85,7 @@ const [companies, setCompanies] = useState([]);
 
 const payload = {
   user_id,
+  companies: formData.company ? [formData.company] : [],
   username: safeTrim(formData.username) || null,
   full_name: safeTrim(formData.full_name) || null,
   email: safeTrim(formData.email) || null,
