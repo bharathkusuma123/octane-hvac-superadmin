@@ -2,7 +2,8 @@ import React, { useState, useContext} from "react";
 import axios from "axios";
 import "./CompanyInformation.css";
 import { AuthContext } from "../AuthContext/AuthContext";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const CompanyForm = ({ onCancel, onSave }) => {
   const [formData, setFormData] = useState({
     companyId: "",
@@ -15,42 +16,70 @@ const CompanyForm = ({ onCancel, onSave }) => {
     timeZone: "",
     status: "",
   });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
  const { userId, userRole } = useContext(AuthContext);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const currentTime = new Date().toISOString();
 
     const payload = {
-  company_id: formData.companyId,
-  company_name: formData.companyName,
-  cr_number: formData.crNumber,
-  vat_number: formData.vatNumber,
-  service_email: formData.serviceEmail,
-  gm_email: formData.gmEmail,
-  currency_code: formData.currencyCode,
-  time_zone: formData.timeZone,
-  status: formData.status, // Should be "Active" or "Inactive"
-  created_at: currentTime,
-  updated_at: currentTime,
-  created_by: userId,
-  updated_by: userId,
-};
-
+      company_id: formData.companyId,
+      company_name: formData.companyName,
+      cr_number: formData.crNumber,
+      vat_number: formData.vatNumber,
+      service_email: formData.serviceEmail,
+      gm_email: formData.gmEmail,
+      currency_code: formData.currencyCode,
+      time_zone: formData.timeZone,
+      status: formData.status,
+      created_at: currentTime,
+      updated_at: currentTime,
+      created_by: userId,
+      updated_by: userId,
+    };
 
     try {
       const response = await axios.post("http://175.29.21.7:8006/companies/", payload);
-      console.log("Response:", response.data);
-      alert("Company added successfully");
-      onSave();
+      
+      toast.success('Company added successfully!', {
+        autoClose: 3000,
+        onClose: onSave
+      });
+      
+      // Reset form after successful submission
+      setFormData({
+        companyId: "",
+        companyName: "",
+        crNumber: "",
+        vatNumber: "",
+        serviceEmail: "",
+        gmEmail: "",
+        currencyCode: "",
+        timeZone: "",
+        status: "",
+      });
+      
     } catch (error) {
       console.error("Error adding company:", error);
-      alert("Failed to add company");
+      
+      let errorMessage = "Failed to add company";
+      if (error.response) {
+        errorMessage = error.response.data.message || errorMessage;
+      }
+      
+      toast.error(errorMessage, {
+        autoClose: 5000,
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -174,6 +203,17 @@ const CompanyForm = ({ onCancel, onSave }) => {
     // </div>
 
     <div className="container mt-4 service-request-form">
+       <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
   <div className="card">
     <div className="card-header">
       <h5 className="mb-1">Company Information</h5>
@@ -285,14 +325,23 @@ const CompanyForm = ({ onCancel, onSave }) => {
             </select>
           </div>
 
-          <div className="d-flex justify-content-center mt-3 gap-3">
-            <button type="submit" className="submit-btn">
-              Save Company
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={onCancel}>
-              Cancel
-            </button>
-          </div>
+       <div className="d-flex justify-content-center mt-3 gap-3">
+                <button 
+                  type="submit" 
+                  className="submit-btn"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Saving Company...' : 'Save Company'}
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  onClick={onCancel}
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </button>
+              </div>
         </div>
       </form>
     </div>

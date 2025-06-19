@@ -1,7 +1,9 @@
 import React, { useEffect,useState, useContext } from "react";
 import "./UserManagement.css";
 import { AuthContext } from "../AuthContext/AuthContext";
-
+import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const SECURITY_QUESTION_CHOICES = [
   "What is your mother’s maiden name?",
   "What was the name of your first pet?",
@@ -12,6 +14,8 @@ const SECURITY_QUESTION_CHOICES = [
 
 const UserForm = ({ onCancel, onSave }) => {
   const { userId, userRole } = useContext(AuthContext);
+  
+const [isSubmitting, setIsSubmitting] = useState(false);
 const [formData, setFormData] = useState({
   username: "",
   full_name: "",
@@ -31,9 +35,10 @@ const [formData, setFormData] = useState({
     company: [], 
 });
 const [companies, setCompanies] = useState([]);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showLastPassword, setShowLastPassword] = useState(false);
 
-
-  const handleChange = (e) => {
+ const handleChange = (e) => {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -42,74 +47,79 @@ const [companies, setCompanies] = useState([]);
   };
 
   useEffect(() => {
-  const fetchCompanies = async () => {
-    try {
-      const response = await fetch("http://175.29.21.7:8006/companies/");
-      const data = await response.json();
-      if (data.status === "success") {
-        setCompanies(data.data);
+    const fetchCompanies = async () => {
+      try {
+        const response = await fetch("http://175.29.21.7:8006/companies/");
+        const data = await response.json();
+        if (data.status === "success") {
+          setCompanies(data.data);
+        } else {
+          toast.error('Failed to load companies');
+        }
+      } catch (error) {
+        console.error("Error fetching companies:", error);
+        toast.error('Error loading companies');
       }
-    } catch (error) {
-      console.error("Error fetching companies:", error);
-    }
-  };
+    };
 
-  fetchCompanies();
-}, []);
-
+    fetchCompanies();
+  }, []);
 
   const handleStatusChange = (e) => {
     setFormData((prev) => ({ ...prev, status: e.target.value }));
   };
 
-
-
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsSubmitting(true);
+    
     const generateUserId = async () => {
-      const response = await fetch('http://175.29.21.7:8006/users/');
-      const users = await response.json();
+      try {
+        const response = await fetch('http://175.29.21.7:8006/users/');
+        const users = await response.json();
 
-      const userIds = users.map(u => u.user_id).filter(id => /^USRID\d+$/.test(id));
-      const numbers = userIds.map(id => parseInt(id.replace('USRID', ''), 10));
-      const max = Math.max(...numbers, 0);
-      const newId = `USRID${(max + 1).toString().padStart(4, '0')}`;
+        const userIds = users.map(u => u.user_id).filter(id => /^USRID\d+$/.test(id));
+        const numbers = userIds.map(id => parseInt(id.replace('USRID', ''), 10));
+        const max = Math.max(...numbers, 0);
+        const newId = `USRID${(max + 1).toString().padStart(4, '0')}`;
 
-      return newId;
+        return newId;
+      } catch (error) {
+        console.error('Error generating user ID:', error);
+        toast.error('Error generating user ID');
+        return null;
+      }
     };
 
-    const user_id = await generateUserId();  // ✅ Now user_id is defined
+    const user_id = await generateUserId();
+    if (!user_id) {
+      setIsSubmitting(false);
+      return;
+    }
 
     const safeTrim = (val) => (val && typeof val === "string" ? val.trim() : "");
 
-const payload = {
-  user_id,
-  companies: formData.company && formData.company.length > 0 ? formData.company : [],
-  username: safeTrim(formData.username) || null,
-  full_name: safeTrim(formData.full_name) || null,
-  email: safeTrim(formData.email) || null,
-  role: formData.role || null,
-  default_company: formData.default_company || null,
-  mobile: safeTrim(formData.mobile) || null,           
-  telephone: safeTrim(formData.telephone) || null,   
-  city: safeTrim(formData.city) || null,
-  country_code: safeTrim(formData.country_code) || null,
-  address: safeTrim(formData.address) || null,
-  last_password: formData.last_password || null,
-  password: formData.current_password || null,
-  status: formData.status || "Active",
-  remarks: safeTrim(formData.remarks) || null,
-  created_by: userId ,
-updated_by: userId ,
-
-   switch_company_allowed: formData.switch_company_allowed,
-};
-
-
-    console.log("Sending payload", payload);
+    const payload = {
+      user_id,
+      companies: formData.company && formData.company.length > 0 ? formData.company : [],
+      username: safeTrim(formData.username) || null,
+      full_name: safeTrim(formData.full_name) || null,
+      email: safeTrim(formData.email) || null,
+      role: formData.role || null,
+      default_company: formData.default_company || null,
+      mobile: safeTrim(formData.mobile) || null,           
+      telephone: safeTrim(formData.telephone) || null,   
+      city: safeTrim(formData.city) || null,
+      country_code: safeTrim(formData.country_code) || null,
+      address: safeTrim(formData.address) || null,
+      last_password: formData.last_password || null,
+      password: formData.current_password || null,
+      status: formData.status || "Active",
+      remarks: safeTrim(formData.remarks) || null,
+      created_by: userId,
+      updated_by: userId,
+      switch_company_allowed: formData.switch_company_allowed,
+    };
 
     try {
       const response = await fetch("http://175.29.21.7:8006/users/", {
@@ -122,21 +132,40 @@ updated_by: userId ,
 
       if (!response.ok) {
         const errorData = await response.json();
-        alert(`Failed: ${response.status} - ${JSON.stringify(errorData)}`);
+        toast.error(`Failed to save user: ${errorData.message || 'Unknown error'}`, {
+          autoClose: 5000,
+        });
         return;
       }
 
-      alert("User saved successfully!");
-      onSave();
+      toast.success('User saved successfully!', {
+        autoClose: 3000,
+        onClose: onSave
+      });
     } catch (error) {
-      alert("Error while saving user: " + error.message);
+      console.error('Error submitting form:', error);
+      toast.error('An error occurred. Please try again later.', {
+        autoClose: 5000,
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
 
-
   return (
 <div className="container mt-4  service-request-form">
+   <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
   <div className="card">
     <div className="card-header">
       <h5 className="mb-1">User Management</h5>
@@ -354,7 +383,7 @@ updated_by: userId ,
           </div>
 
           {/* Address */}
-          <div className="col-12">
+          <div className="col-8">
             <label className="form-label">Address</label>
             <textarea
               name="address"
@@ -367,31 +396,50 @@ updated_by: userId ,
           </div>
 
           {/* Account Settings */}
-          <div className="col-md-4">
-            <label className="form-label">Current Password</label>
-            <input
-              type="password"
-              name="current_password"
-              placeholder="Enter password"
-              className="form-control"
-              value={formData.current_password}
-              onChange={handleChange}
-              required
-            />
-          </div>
+          {/* Account Settings - Updated Password Fields with Eye Toggle */}
+              <div className="col-md-4">
+                <label className="form-label">Current Password</label>
+                <div className="input-group">
+                  <input
+                    type={showCurrentPassword ? "text" : "password"}
+                    name="current_password"
+                    placeholder="Enter password"
+                    className="form-control"
+                    value={formData.current_password}
+                    onChange={handleChange}
+                    required
+                  />
+                  <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  >
+                    {showCurrentPassword ? <EyeSlashFill /> : <EyeFill />}
+                  </button>
+                </div>
+              </div>
 
-          <div className="col-md-4">
-            <label className="form-label">Confirm Password</label>
-            <input
-              type="password"
-              name="last_password"
-              placeholder="Confirm password"
-              className="form-control"
-              value={formData.last_password}
-              onChange={handleChange}
-              required
-            />
-          </div>
+              <div className="col-md-4">
+                <label className="form-label">Confirm Password</label>
+                <div className="input-group">
+                  <input
+                    type={showLastPassword ? "text" : "password"}
+                    name="last_password"
+                    placeholder="Confirm password"
+                    className="form-control"
+                    value={formData.last_password}
+                    onChange={handleChange}
+                    required
+                  />
+                  <button
+                    className="btn btn-outline-secondary"
+                    type="button"
+                    onClick={() => setShowLastPassword(!showLastPassword)}
+                  >
+                    {showLastPassword ? <EyeSlashFill /> : <EyeFill />}
+                  </button>
+                </div>
+              </div>
 
           <div className="col-md-4">
             <label className="form-label">Status</label>
@@ -426,9 +474,13 @@ updated_by: userId ,
 
           {/* Buttons */}
           <div className="d-flex justify-content-center mt-3 gap-3">
-            <button type="submit" className="submit-btn">
-              Save User
-            </button>
+             <button 
+      type="submit" 
+      className="submit-btn" 
+      disabled={isSubmitting}
+    >
+      {isSubmitting ? 'Saving User...' : 'Save User'}
+    </button>
             <button type="button" className="btn btn-secondary" onClick={onCancel}>
               Cancel
             </button>
