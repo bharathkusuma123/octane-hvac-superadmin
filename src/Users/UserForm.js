@@ -179,8 +179,11 @@ const [companies, setCompanies] = useState([]);
     </div>
     <div className="card-body">
       <form onSubmit={handleSubmit}>
-        <div className="row g-3">
+        <div>
           {/* Basic Information */}
+
+          <div className="row g-3 mb-2">
+            <h5>Basic Information</h5>
           <div className="col-md-4">
             <label className="form-label">Username</label>
             <input
@@ -219,6 +222,8 @@ const [companies, setCompanies] = useState([]);
               required
             />
           </div>
+</div>
+          <div className="row g-3 mb-4">
 
           <div className="col-md-4">
             <label className="form-label">Role </label>
@@ -301,8 +306,9 @@ const [companies, setCompanies] = useState([]);
 
 
 </div>
+</div>
 
-
+ <div className="row">
 {formData.switch_company_allowed && (
   <div className="col-md-4 mt-2">
     <label className="form-label">Select Companies</label>
@@ -328,9 +334,13 @@ const [companies, setCompanies] = useState([]);
   </div>
 )}
 
+</div>
 
 
-          {/* Contact Information */}
+
+ <div className="row g-3 mb-4">
+          
+           <h5>Contact Information</h5>
           <div className="col-md-4">
             <label className="form-label">Mobile</label>
             <input
@@ -381,8 +391,12 @@ const [companies, setCompanies] = useState([]);
               required
             />
           </div>
+</div>
+          
 
           {/* Address */}
+          <div className="row g-3 mb-4">
+            <h5>Address</h5>
           <div className="col-8">
             <label className="form-label">Address</label>
             <textarea
@@ -394,9 +408,12 @@ const [companies, setCompanies] = useState([]);
               required
             />
           </div>
+          </div>
 
           {/* Account Settings */}
           {/* Account Settings - Updated Password Fields with Eye Toggle */}
+          <div className="row g-3 mb-4">
+             <h5>Account Settings</h5>
               <div className="col-md-4">
                 <label className="form-label">Current Password</label>
                 <div className="input-group">
@@ -459,10 +476,12 @@ const [companies, setCompanies] = useState([]);
               ))}
             </div>
           </div>
-
+</div>
           {/* Additional Notes */}
+          <div className="row g-3 mb-4">
+              <h5>Additional Notes</h5>
           <div className="col-12">
-            <label className="form-label">Additional Notes</label>
+            <label className="form-label">Remarks</label>
             <textarea
               name="remarks"
               className="form-control"
@@ -470,6 +489,7 @@ const [companies, setCompanies] = useState([]);
               value={formData.remarks}
               onChange={handleChange}
             />
+          </div>
           </div>
 
           {/* Buttons */}
