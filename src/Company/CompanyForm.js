@@ -362,8 +362,7 @@ import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import "./CompanyInformation.css";
 import { AuthContext } from "../AuthContext/AuthContext";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 
 const CompanyForm = ({ onCancel, onSave, initialData = null }) => {
   const [formData, setFormData] = useState({
@@ -422,7 +421,6 @@ const CompanyForm = ({ onCancel, onSave, initialData = null }) => {
       updated_by: userId,
     };
 
-    // Add created_by & created_at only if it's a new company
     if (!initialData) {
       payload.created_at = currentTime;
       payload.created_by = userId;
@@ -432,20 +430,23 @@ const CompanyForm = ({ onCancel, onSave, initialData = null }) => {
       if (initialData) {
         // Update existing company
         await axios.put(`http://175.29.21.7:8006/companies/${formData.companyId}/`, payload);
-        toast.success("Company updated successfully!", {
-          autoClose: 3000,
-          onClose: onSave,
-        });
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Company updated successfully!",
+          confirmButtonColor: "#3085d6",
+        }).then(onSave);
       } else {
         // Create new company
         await axios.post("http://175.29.21.7:8006/companies/", payload);
-        toast.success("Company added successfully!", {
-          autoClose: 3000,
-          onClose: onSave,
-        });
+        Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: "Company added successfully!",
+          confirmButtonColor: "#3085d6",
+        }).then(onSave);
       }
 
-      // Reset form
       setFormData({
         companyId: "",
         companyName: "",
@@ -457,14 +458,19 @@ const CompanyForm = ({ onCancel, onSave, initialData = null }) => {
         timeZone: "",
         status: "",
       });
-
     } catch (error) {
       console.error("Error submitting company:", error);
       let errorMessage = "Failed to submit company";
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       }
-      toast.error(errorMessage, { autoClose: 5000 });
+
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: errorMessage,
+        confirmButtonColor: "#d33",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -472,7 +478,6 @@ const CompanyForm = ({ onCancel, onSave, initialData = null }) => {
 
   return (
     <div className="container mt-4 service-request-form">
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
       <div className="card">
         <div className="card-header">
           <h5 className="mb-1">{initialData ? "Edit Company" : "Company Information"}</h5>
@@ -495,7 +500,7 @@ const CompanyForm = ({ onCancel, onSave, initialData = null }) => {
                   value={formData.companyId}
                   onChange={handleChange}
                   required
-                  disabled={!!initialData} // Disable on edit
+                  disabled={!!initialData}
                 />
               </div>
               <div className="col-md-4">
@@ -617,3 +622,4 @@ const CompanyForm = ({ onCancel, onSave, initialData = null }) => {
 };
 
 export default CompanyForm;
+

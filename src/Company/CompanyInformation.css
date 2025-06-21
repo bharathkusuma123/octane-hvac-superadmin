@@ -143,3 +143,19 @@
 .table td {
   vertical-align: middle;
 }
+
+
+
+.company-action-icon {
+  cursor: pointer;
+  font-size: 1rem;
+  margin-right: 8px;
+}
+
+.company-action-icon.edit {
+  color: #0d6efd;
+}
+
+.company-action-icon.delete {
+  color: #dc3545;
+}

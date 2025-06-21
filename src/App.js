@@ -15,6 +15,7 @@ import AuthProvider from "./AuthContext/AuthContext";
 
 import SuperAdminLogin from "./Login/Login";
 import CompanyInformation from "./Company/CompanyInformation";
+import CompanyView from "./Company/CompanyView";
 import CustomerComplaints from "./CustomerComplaints/CustomerComplaints";
 import CustomerSatisfactionSurvey from "./CustomerSatisfactionSurvey/CustomerSatisfactionSurvey";
 import ServiceCompletion from "./ServiceCompletionForm/ServiceCompletion";
@@ -106,6 +107,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+          <Route path="/companies/view/:company_id" element={
+             <ProtectedRoute><CompanyView /></ProtectedRoute>} />
         <Route
           path="/superadmin/service-completion"
           element={

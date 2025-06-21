@@ -19,7 +19,7 @@
 import React, { useState } from "react";
 import CompanyForm from "./CompanyForm";
 import CompanyTable from "./CompanyTable";
-
+import { SnackbarProvider } from "notistack";
 const CompanyInformation = () => {
   const [isFormVisible, setFormVisible] = useState(false);
   const [editingCompany, setEditingCompany] = useState(null);
@@ -35,11 +35,13 @@ const CompanyInformation = () => {
   };
 
   return isFormVisible ? (
+   <SnackbarProvider maxSnack={3} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
     <CompanyForm
       onCancel={() => setFormVisible(false)}
       onSave={() => setFormVisible(false)}
       initialData={editingCompany}
     />
+</SnackbarProvider>
   ) : (
     <CompanyTable onAdd={handleAdd} onEdit={handleEdit} />
   );
