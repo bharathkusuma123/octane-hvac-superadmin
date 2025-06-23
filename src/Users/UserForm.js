@@ -1,9 +1,9 @@
-import React, { useEffect,useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "./UserManagement.css";
 import { AuthContext } from "../AuthContext/AuthContext";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Swal from "sweetalert2";
+
 const SECURITY_QUESTION_CHOICES = [
   "What is your mother’s maiden name?",
   "What was the name of your first pet?",
@@ -15,30 +15,30 @@ const SECURITY_QUESTION_CHOICES = [
 const UserForm = ({ onCancel, onSave }) => {
   const { userId, userRole } = useContext(AuthContext);
   
-const [isSubmitting, setIsSubmitting] = useState(false);
-const [formData, setFormData] = useState({
-  username: "",
-  full_name: "",
-  email: "",
-  role: "Admin",
-  mobile: "",            
-  telephone: "",       
-  city: "",
-  country_code: "",
-  address: "",
-  current_password: "",
-  last_password: "",
-  status: "Active",
-  remarks: "",
-   default_company: "",
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    username: "",
+    full_name: "",
+    email: "",
+    role: "Admin",
+    mobile: "",            
+    telephone: "",       
+    city: "",
+    country_code: "",
+    address: "",
+    current_password: "",
+    last_password: "",
+    status: "Active",
+    remarks: "",
+    default_company: "",
     switch_company_allowed: false,
     company: [], 
-});
-const [companies, setCompanies] = useState([]);
+  });
+  const [companies, setCompanies] = useState([]);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showLastPassword, setShowLastPassword] = useState(false);
 
- const handleChange = (e) => {
+  const handleChange = (e) => {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -54,11 +54,21 @@ const [companies, setCompanies] = useState([]);
         if (data.status === "success") {
           setCompanies(data.data);
         } else {
-          toast.error('Failed to load companies');
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Failed to load companies",
+            confirmButtonColor: "#d33",
+          });
         }
       } catch (error) {
         console.error("Error fetching companies:", error);
-        toast.error('Error loading companies');
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Error loading companies",
+          confirmButtonColor: "#d33",
+        });
       }
     };
 
@@ -86,7 +96,12 @@ const [companies, setCompanies] = useState([]);
         return newId;
       } catch (error) {
         console.error('Error generating user ID:', error);
-        toast.error('Error generating user ID');
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Error generating user ID",
+          confirmButtonColor: "#d33",
+        });
         return null;
       }
     };
@@ -132,385 +147,369 @@ const [companies, setCompanies] = useState([]);
 
       if (!response.ok) {
         const errorData = await response.json();
-        toast.error(`Failed to save user: ${errorData.message || 'Unknown error'}`, {
-          autoClose: 5000,
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: `Failed to save user: ${errorData.message || 'Unknown error'}`,
+          confirmButtonColor: "#d33",
         });
         return;
       }
 
-      toast.success('User saved successfully!', {
-        autoClose: 3000,
-        onClose: onSave
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "User saved successfully!",
+        confirmButtonColor: "#3085d6",
+      }).then(() => {
+        if (onSave) onSave();
       });
     } catch (error) {
       console.error('Error submitting form:', error);
-      toast.error('An error occurred. Please try again later.', {
-        autoClose: 5000,
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred. Please try again later.",
+        confirmButtonColor: "#d33",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-
   return (
-<div className="container mt-4  service-request-form">
-   <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-  <div className="card">
-    <div className="card-header">
-      <h5 className="mb-1">User Management</h5>
-      <h6 className="text" style={{ color: "white" }}>
-        Add, view and manage user accounts
-      </h6>
-
-       <h6 className="text" style={{ color: "white" }}>
-  Logged in as: <strong>{userId},{userRole}</strong>
-</h6>
-    </div>
-    <div className="card-body">
-      <form onSubmit={handleSubmit}>
-        <div>
-          {/* Basic Information */}
-
-          <div className="row g-3 mb-2">
-            <h5>Basic Information</h5>
-          <div className="col-md-4">
-            <label className="form-label">Username</label>
-            <input
-              type="text"
-              name="username"
-              placeholder="Enter username"
-              className="form-control"
-              value={formData.username}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="col-md-4">
-            <label className="form-label">Full Name</label>
-            <input
-              type="text"
-              name="full_name"
-              placeholder="Enter full name"
-              className="form-control"
-              value={formData.full_name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="col-md-4">
-            <label className="form-label">Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="user@example.com"
-              className="form-control"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-</div>
-          <div className="row g-3 mb-4">
-
-          <div className="col-md-4">
-            <label className="form-label">Role </label>
-            <input
-              type="text"
-              name="role"
-              className="form-control"
-              value="Admin"
-              readOnly
-            />
-          </div>
-
-          <div className="col-md-4">
-            <label className="form-label">Default Company</label>
-            <select
-              name="default_company"
-              className="form-control"
-              value={formData.default_company}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select a company</option>
-              {companies.map((company) => (
-                <option key={company.company_id} value={company.company_id}>
-                  {company.company_name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="col-md-4 d-flex align-items-center mt-2">
-  <div className="col-md-4 mt-2">
-  <label className="form-label me-2">Switch Company</label>
-  <div className="d-flex gap-4">
-    <div className="form-check">
-      <input
-        className="form-check-input"
-        type="radio"
-        name="switchCompany"
-        id="switchYes"
-        value="yes"
-        checked={formData.switch_company_allowed === true}
-        onChange={() =>
-          setFormData((prev) => ({
-            ...prev,
-            switch_company_allowed: true,
-          }))
-        }
-      />
-      <label className="form-check-label" htmlFor="switchYes">
-        Yes
-      </label>
-    </div>
-
-    <div className="form-check">
-      <input
-        className="form-check-input"
-        type="radio"
-        name="switchCompany"
-        id="switchNo"
-        value="no"
-        checked={formData.switch_company_allowed === false}
-        onChange={() =>
-          setFormData((prev) => ({
-            ...prev,
-            switch_company_allowed: false,
-          }))
-        }
-      />
-      <label className="form-check-label" htmlFor="switchNo">
-        No
-      </label>
-    </div>
-  </div>
-</div>
-
-
-
-
-
-
-</div>
-</div>
-
- <div className="row">
-{formData.switch_company_allowed && (
-  <div className="col-md-4 mt-2">
-    <label className="form-label">Select Companies</label>
-    <select
-      multiple
-      className="form-control"
-      style={{ height: "120px" }} // optional for better UI
-      value={formData.company}
-      onChange={(e) => {
-        const selected = Array.from(e.target.selectedOptions, (option) => option.value);
-        setFormData((prev) => ({
-          ...prev,
-          company: selected,
-        }));
-      }}
-    >
-      {companies.map((company) => (
-        <option key={company.company_id} value={company.company_id}>
-          {company.company_name}
-        </option>
-      ))}
-    </select>
-  </div>
-)}
-
-</div>
-
-
-
- <div className="row g-3 mb-4">
-          
-           <h5>Contact Information</h5>
-          <div className="col-md-4">
-            <label className="form-label">Mobile</label>
-            <input
-              type="text"
-              name="mobile"
-              placeholder="Mobile (e.g., +1 123-456-7890)"
-              className="form-control"
-              value={formData.mobile}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="col-md-4">
-            <label className="form-label">Telephone</label>
-            <input
-              type="text"
-              name="telephone"
-              placeholder="Telephone"
-              className="form-control"
-              value={formData.telephone}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="col-md-4">
-            <label className="form-label">City</label>
-            <input
-              type="text"
-              name="city"
-              placeholder="City"
-              className="form-control"
-              value={formData.city}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="col-md-4">
-            <label className="form-label">Country Code</label>
-            <input
-              type="text"
-              name="country_code"
-              placeholder="Country Code (e.g., +966)"
-              className="form-control"
-              value={formData.country_code}
-              onChange={handleChange}
-              required
-            />
-          </div>
-</div>
-          
-
-          {/* Address */}
-          <div className="row g-3 mb-4">
-            <h5>Address</h5>
-          <div className="col-8">
-            <label className="form-label">Address</label>
-            <textarea
-              name="address"
-              className="form-control"
-              placeholder="Enter complete postal address"
-              value={formData.address}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          </div>
-
-          {/* Account Settings */}
-          {/* Account Settings - Updated Password Fields with Eye Toggle */}
-          <div className="row g-3 mb-4">
-             <h5>Account Settings</h5>
-              <div className="col-md-4">
-                <label className="form-label">Current Password</label>
-                <div className="input-group">
-                  <input
-                    type={showCurrentPassword ? "text" : "password"}
-                    name="current_password"
-                    placeholder="Enter password"
-                    className="form-control"
-                    value={formData.current_password}
-                    onChange={handleChange}
-                    required
-                  />
-                  <button
-                    className="btn btn-outline-secondary"
-                    type="button"
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  >
-                    {showCurrentPassword ? <EyeSlashFill /> : <EyeFill />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="col-md-4">
-                <label className="form-label">Confirm Password</label>
-                <div className="input-group">
-                  <input
-                    type={showLastPassword ? "text" : "password"}
-                    name="last_password"
-                    placeholder="Confirm password"
-                    className="form-control"
-                    value={formData.last_password}
-                    onChange={handleChange}
-                    required
-                  />
-                  <button
-                    className="btn btn-outline-secondary"
-                    type="button"
-                    onClick={() => setShowLastPassword(!showLastPassword)}
-                  >
-                    {showLastPassword ? <EyeSlashFill /> : <EyeFill />}
-                  </button>
-                </div>
-              </div>
-
-          <div className="col-md-4">
-            <label className="form-label">Status</label>
-            <div className="d-flex gap-3">
-              {["Active", "Inactive", "Blocked"].map((s) => (
-                <div key={s} className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="status"
-                    value={s}
-                    checked={formData.status === s}
-                    onChange={handleStatusChange}
-                  />
-                  <label className="form-check-label">{s}</label>
-                </div>
-              ))}
-            </div>
-          </div>
-</div>
-          {/* Additional Notes */}
-          <div className="row g-3 mb-4">
-              <h5>Additional Notes</h5>
-          <div className="col-12">
-            <label className="form-label">Remarks</label>
-            <textarea
-              name="remarks"
-              className="form-control"
-              placeholder="Optional remarks or notes"
-              value={formData.remarks}
-              onChange={handleChange}
-            />
-          </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="d-flex justify-content-center mt-3 gap-3">
-             <button 
-      type="submit" 
-      className="submit-btn" 
-      disabled={isSubmitting}
-    >
-      {isSubmitting ? 'Saving User...' : 'Save User'}
-    </button>
-            <button type="button" className="btn btn-secondary" onClick={onCancel}>
-              Cancel
-            </button>
-          </div>
+    <div className="container mt-4 service-request-form">
+      <div className="card">
+        <div className="card-header">
+          <h5 className="mb-1">User Management</h5>
+          <h6 className="text" style={{ color: "white" }}>
+            Add, view and manage user accounts
+          </h6>
+          <h6 className="text" style={{ color: "white" }}>
+            Logged in as: <strong>{userId},{userRole}</strong>
+          </h6>
         </div>
-      </form>
-    </div>
-  </div>
-</div>
+        <div className="card-body">
+          <form onSubmit={handleSubmit}>
+            <div>
+              {/* Basic Information */}
+              <div className="row g-3 mb-2">
+                <h5>Basic Information</h5>
+                <div className="col-md-4">
+                  <label className="form-label">Username</label>
+                  <input
+                    type="text"
+                    name="username"
+                    placeholder="Enter username"
+                    className="form-control"
+                    value={formData.username}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
 
+                <div className="col-md-4">
+                  <label className="form-label">Full Name</label>
+                  <input
+                    type="text"
+                    name="full_name"
+                    placeholder="Enter full name"
+                    className="form-control"
+                    value={formData.full_name}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="col-md-4">
+                  <label className="form-label">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="user@example.com"
+                    className="form-control"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="row g-3 mb-4">
+                <div className="col-md-4">
+                  <label className="form-label">Role </label>
+                  <input
+                    type="text"
+                    name="role"
+                    className="form-control"
+                    value="Admin"
+                    readOnly
+                  />
+                </div>
+
+                <div className="col-md-4">
+                  <label className="form-label">Default Company</label>
+                  <select
+                    name="default_company"
+                    className="form-control"
+                    value={formData.default_company}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Select a company</option>
+                    {companies.map((company) => (
+                      <option key={company.company_id} value={company.company_id}>
+                        {company.company_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="col-md-4 d-flex align-items-center mt-2">
+                  <div className="col-md-4 mt-2">
+                    <label className="form-label me-2">Switch Company</label>
+                    <div className="d-flex gap-4">
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="switchCompany"
+                          id="switchYes"
+                          value="yes"
+                          checked={formData.switch_company_allowed === true}
+                          onChange={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              switch_company_allowed: true,
+                            }))
+                          }
+                        />
+                        <label className="form-check-label" htmlFor="switchYes">
+                          Yes
+                        </label>
+                      </div>
+
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="switchCompany"
+                          id="switchNo"
+                          value="no"
+                          checked={formData.switch_company_allowed === false}
+                          onChange={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              switch_company_allowed: false,
+                            }))
+                          }
+                        />
+                        <label className="form-check-label" htmlFor="switchNo">
+                          No
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                {formData.switch_company_allowed && (
+                  <div className="col-md-4 mt-2">
+                    <label className="form-label">Select Companies</label>
+                    <select
+                      multiple
+                      className="form-control"
+                      style={{ height: "120px" }}
+                      value={formData.company}
+                      onChange={(e) => {
+                        const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+                        setFormData((prev) => ({
+                          ...prev,
+                          company: selected,
+                        }));
+                      }}
+                    >
+                      {companies.map((company) => (
+                        <option key={company.company_id} value={company.company_id}>
+                          {company.company_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
+
+              <div className="row g-3 mb-4">
+                <h5>Contact Information</h5>
+                <div className="col-md-4">
+                  <label className="form-label">Mobile</label>
+                  <input
+                    type="text"
+                    name="mobile"
+                    placeholder="Mobile (e.g., +1 123-456-7890)"
+                    className="form-control"
+                    value={formData.mobile}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="col-md-4">
+                  <label className="form-label">Telephone</label>
+                  <input
+                    type="text"
+                    name="telephone"
+                    placeholder="Telephone"
+                    className="form-control"
+                    value={formData.telephone}
+                    onChange={handleChange}
+                  />
+                </div>
+
+                <div className="col-md-4">
+                  <label className="form-label">City</label>
+                  <input
+                    type="text"
+                    name="city"
+                    placeholder="City"
+                    className="form-control"
+                    value={formData.city}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="col-md-4">
+                  <label className="form-label">Country Code</label>
+                  <input
+                    type="text"
+                    name="country_code"
+                    placeholder="Country Code (e.g., +966)"
+                    className="form-control"
+                    value={formData.country_code}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Address */}
+              <div className="row g-3 mb-4">
+                <h5>Address</h5>
+                <div className="col-8">
+                  <label className="form-label">Address</label>
+                  <textarea
+                    name="address"
+                    className="form-control"
+                    placeholder="Enter complete postal address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Account Settings */}
+              <div className="row g-3 mb-4">
+                <h5>Account Settings</h5>
+                <div className="col-md-4">
+                  <label className="form-label">Current Password</label>
+                  <div className="input-group">
+                    <input
+                      type={showCurrentPassword ? "text" : "password"}
+                      name="current_password"
+                      placeholder="Enter password"
+                      className="form-control"
+                      value={formData.current_password}
+                      onChange={handleChange}
+                      required
+                    />
+                    <button
+                      className="btn btn-outline-secondary"
+                      type="button"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                    >
+                      {showCurrentPassword ? <EyeSlashFill /> : <EyeFill />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="col-md-4">
+                  <label className="form-label">Confirm Password</label>
+                  <div className="input-group">
+                    <input
+                      type={showLastPassword ? "text" : "password"}
+                      name="last_password"
+                      placeholder="Confirm password"
+                      className="form-control"
+                      value={formData.last_password}
+                      onChange={handleChange}
+                      required
+                    />
+                    <button
+                      className="btn btn-outline-secondary"
+                      type="button"
+                      onClick={() => setShowLastPassword(!showLastPassword)}
+                    >
+                      {showLastPassword ? <EyeSlashFill /> : <EyeFill />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="col-md-4">
+                  <label className="form-label">Status</label>
+                  <div className="d-flex gap-3">
+                    {["Active", "Inactive", "Blocked"].map((s) => (
+                      <div key={s} className="form-check form-check-inline">
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="status"
+                          value={s}
+                          checked={formData.status === s}
+                          onChange={handleStatusChange}
+                        />
+                        <label className="form-check-label">{s}</label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Additional Notes */}
+              <div className="row g-3 mb-4">
+                <h5>Additional Notes</h5>
+                <div className="col-12">
+                  <label className="form-label">Remarks</label>
+                  <textarea
+                    name="remarks"
+                    className="form-control"
+                    placeholder="Optional remarks or notes"
+                    value={formData.remarks}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="d-flex justify-content-center mt-3 gap-3">
+                <button 
+                  type="submit" 
+                  className="submit-btn" 
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Saving User...' : 'Save User'}
+                </button>
+                <button type="button" className="btn btn-secondary" onClick={onCancel}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 };
 
