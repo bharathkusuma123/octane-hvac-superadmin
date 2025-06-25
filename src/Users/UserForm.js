@@ -4,19 +4,12 @@ import { AuthContext } from "../AuthContext/AuthContext";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import Swal from "sweetalert2";
 
-const SECURITY_QUESTION_CHOICES = [
-  "What is your mother’s maiden name?",
-  "What was the name of your first pet?",
-  "What was your first car?",
-  "What is the name of the town where you were born?",
-  "What was your childhood nickname?",
-];
-
 const UserForm = ({ onCancel, onSave }) => {
   const { userId, userRole } = useContext(AuthContext);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
+    user_id: "",
     username: "",
     full_name: "",
     email: "",
@@ -83,39 +76,12 @@ const UserForm = ({ onCancel, onSave }) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    const generateUserId = async () => {
-      try {
-        const response = await fetch('http://175.29.21.7:8006/users/');
-        const users = await response.json();
 
-        const userIds = users.map(u => u.user_id).filter(id => /^USRID\d+$/.test(id));
-        const numbers = userIds.map(id => parseInt(id.replace('USRID', ''), 10));
-        const max = Math.max(...numbers, 0);
-        const newId = `USRID${(max + 1).toString().padStart(4, '0')}`;
-
-        return newId;
-      } catch (error) {
-        console.error('Error generating user ID:', error);
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Error generating user ID",
-          confirmButtonColor: "#d33",
-        });
-        return null;
-      }
-    };
-
-    const user_id = await generateUserId();
-    if (!user_id) {
-      setIsSubmitting(false);
-      return;
-    }
 
     const safeTrim = (val) => (val && typeof val === "string" ? val.trim() : "");
 
     const payload = {
-      user_id,
+      user_id: safeTrim(formData.user_id),
       companies: formData.company && formData.company.length > 0 ? formData.company : [],
       username: safeTrim(formData.username) || null,
       full_name: safeTrim(formData.full_name) || null,
@@ -193,8 +159,21 @@ const UserForm = ({ onCancel, onSave }) => {
           <form onSubmit={handleSubmit}>
             <div>
               {/* Basic Information */}
-              <div className="row g-3 mb-2">
+              <div className="row g-3 mb-4">
                 <h5>Basic Information</h5>
+
+                <div className="col-md-4">
+                  <label className="form-label">User Id</label>
+                  <input
+                    type="text"
+                     name="user_id"
+                    placeholder="Enter userId"
+                    className="form-control"
+                    value={formData.user_id}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
                 <div className="col-md-4">
                   <label className="form-label">Username</label>
                   <input
@@ -221,18 +200,7 @@ const UserForm = ({ onCancel, onSave }) => {
                   />
                 </div>
 
-                <div className="col-md-4">
-                  <label className="form-label">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="user@example.com"
-                    className="form-control"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+                
               </div>
 
               <div className="row g-3 mb-4">
@@ -342,6 +310,20 @@ const UserForm = ({ onCancel, onSave }) => {
 
               <div className="row g-3 mb-4">
                 <h5>Contact Information</h5>
+
+
+                <div className="col-md-4">
+                  <label className="form-label">Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="user@example.com"
+                    className="form-control"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
                 <div className="col-md-4">
                   <label className="form-label">Mobile</label>
                   <input
