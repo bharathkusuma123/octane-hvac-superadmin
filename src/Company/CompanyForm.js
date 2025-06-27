@@ -484,9 +484,9 @@ const CompanyForm = ({ onCancel, onSave, initialData = null }) => {
           <h6 className="text" style={{ color: "white" }}>
             {initialData ? "Update the company details below" : "Fill in the company details below"}
           </h6>
-          <h6 className="text" style={{ color: "white" }}>
+          {/* <h6 className="text" style={{ color: "white" }}>
             Logged in as: <strong>{userId}, {userRole}</strong>
-          </h6>
+          </h6> */}
         </div>
         <div className="card-body">
           <form onSubmit={handleSubmit}>

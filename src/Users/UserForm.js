@@ -151,9 +151,7 @@ const UserForm = ({ onCancel, onSave }) => {
           <h6 className="text" style={{ color: "white" }}>
             Add, view and manage user accounts
           </h6>
-          <h6 className="text" style={{ color: "white" }}>
-            Logged in as: <strong>{userId},{userRole}</strong>
-          </h6>
+         
         </div>
         <div className="card-body">
           <form onSubmit={handleSubmit}>
