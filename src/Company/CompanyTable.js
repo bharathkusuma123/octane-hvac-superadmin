@@ -567,23 +567,26 @@ const CompanyTable = ({ onAdd, onEdit }) => {
                             {company.status}
                           </span>
                         </td>
-                        <td style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                          <FaEye
-                            title="View"
-                            onClick={() => navigate(`/companies/view/${company.company_id}`)}
-                            style={{ color: "#0dcaf0", cursor: "pointer", fontSize: "1.2rem" }}
-                          />
-                          <FaEdit
-                            title="Edit"
-                            onClick={() => onEdit(company)}
-                            style={{ color: "#0d6efd", cursor: "pointer", fontSize: "1.2rem" }}
-                          />
-                          <FaTrash
-                            title="Delete"
-                            onClick={() => handleDelete(company.company_id)}
-                            style={{ color: "#dc3545", cursor: "pointer", fontSize: "1.2rem" }}
-                          />
-                        </td>
+                       <td>
+  <div className="action-icons">
+    <FaEye
+      title="View"
+      onClick={() => navigate(`/companies/view/${company.company_id}`)}
+      className="action-icon view-icon"
+    />
+    <FaEdit
+      title="Edit"
+      onClick={() => onEdit(company)}
+      className="action-icon edit-icon"
+    />
+    <FaTrash
+      title="Delete"
+      onClick={() => handleDelete(company.company_id)}
+      className="action-icon delete-icon"
+    />
+  </div>
+</td>
+
                       </tr>
                     ))
                   ) : (

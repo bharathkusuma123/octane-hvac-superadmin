@@ -161,7 +161,9 @@
 
 
 import React, { useEffect, useState } from "react";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import "./UserManagement.css";
+import { useNavigate } from "react-router-dom";
 
 const UserTable = ({ onAdd }) => {
   const [users, setUsers] = useState([]);
@@ -169,8 +171,13 @@ const UserTable = ({ onAdd }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [entriesPerPage, setEntriesPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = () => {
     fetch("http://175.29.21.7:8006/users/")
       .then((response) => {
         if (!response.ok) throw new Error("Failed to fetch users");
@@ -186,7 +193,7 @@ const UserTable = ({ onAdd }) => {
       .catch((error) => {
         console.error("Error fetching user data:", error);
       });
-  }, []);
+  };
 
   useEffect(() => {
     const filtered = users.filter((user) =>
@@ -199,10 +206,34 @@ const UserTable = ({ onAdd }) => {
     setCurrentPage(1);
   }, [searchTerm, users]);
 
+  const handleDelete = (userId) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      fetch(`http://175.29.21.7:8006/users/${userId}/`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("Failed to delete user");
+          fetchUsers(); // Refresh the user list after deletion
+        })
+        .catch((error) => {
+          console.error("Error deleting user:", error);
+        });
+    }
+  };
+
+  const handleEdit = (user) => {
+    navigate(`/users/edit/${user.user_id}`, { state: { user } });
+  };
+
+  const handleView = (userId) => {
+    navigate(`/users/view/${userId}`);
+  };
+
   const indexOfLastEntry = currentPage * entriesPerPage;
   const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstEntry, indexOfLastEntry);
   const totalPages = Math.ceil(filteredUsers.length / entriesPerPage);
+
   const formatDate = (dateString) => {
     if (!dateString) return '-';
     try {
@@ -218,6 +249,7 @@ const UserTable = ({ onAdd }) => {
       return 'Invalid date';
     }
   };
+
   return (
     <div className="container-fluid user-management-container">
       {/* Header */}
@@ -256,7 +288,7 @@ const UserTable = ({ onAdd }) => {
 
       {/* Table */}
       <div className="table-responsive mb-4">
-        <table className="table ">
+        <table className="table">
           <thead className="product-table-header">
             <tr>
               <th>S.No</th>
@@ -272,12 +304,11 @@ const UserTable = ({ onAdd }) => {
               <th>Remarks</th>
               <th>Role</th>
               <th>Address</th>
-              {/* <th>Created At</th>
-              <th>Updated At</th> */}
               <th>Default Company</th>
               <th>Accesible Companies</th>
               <th>Created By</th>
               <th>Updated By</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -305,17 +336,35 @@ const UserTable = ({ onAdd }) => {
                   <td>{user.remarks}</td>
                   <td>{user.role}</td>
                   <td>{user.address}</td>
-                  {/* <td>{new Date(user.created_at).toLocaleString()}</td>
-                  <td>{new Date(user.updated_at).toLocaleString()}</td> */}
-                     <td>{user.default_company}</td>
-                    <td>{user.companies && user.companies.join(', ')}</td>
+                  <td>{user.default_company}</td>
+                  <td>{user.companies && user.companies.join(', ')}</td>
                   <td>{user.created_by}</td>
                   <td>{user.updated_by}</td>
+                 <td>
+  <div className="action-icons">
+    <FaEye
+      title="View"
+      onClick={() => handleView(user.user_id)}
+      className="action-icon view-icon"
+    />
+    <FaEdit
+      title="Edit"
+      onClick={() => handleEdit(user)}
+      className="action-icon edit-icon"
+    />
+    <FaTrash
+      title="Delete"
+      onClick={() => handleDelete(user.user_id)}
+      className="action-icon delete-icon"
+    />
+  </div>
+</td>
+
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="18" className="text-center">No users found.</td>
+                <td colSpan="19" className="text-center">No users found.</td>
               </tr>
             )}
           </tbody>

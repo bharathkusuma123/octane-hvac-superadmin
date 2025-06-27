@@ -159,3 +159,30 @@
 .company-action-icon.delete {
   color: #dc3545;
 }
+
+
+
+
+.action-icons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-icon {
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.view-icon {
+  color: #0dcaf0;
+}
+
+.edit-icon {
+  color: #0d6efd;
+}
+
+.delete-icon {
+  color: #dc3545;
+}
