@@ -20,7 +20,8 @@ import CustomerComplaints from "./CustomerComplaints/CustomerComplaints";
 import CustomerSatisfactionSurvey from "./CustomerSatisfactionSurvey/CustomerSatisfactionSurvey";
 import ServiceCompletion from "./ServiceCompletionForm/ServiceCompletion";
 import UserManagement from "./Users/UserManagement"
-
+import SurveyQuestions from "./Survey/SurveyQuestions";
+import QuestionsView from "./Survey/QuestionsView";
 import logo from "./Logos/hvac-logo-new.jpg";
 
 // 🔹 TopNavbar
@@ -42,6 +43,8 @@ const TopNavbar = () => {
     { path: "/superadmin/customer-satisfaction-survey", label: "Customer Satisfaction Survey" },
     { path: "/superadmin/customer-complaints", label: "Customer Complaints" },
     { path: "/superadmin/user-management", label: "Users" },
+    // { path: "/superadmin/survey-questions", label: "SurveyQuestions" },
+    { path: "/superadmin/view-questions", label: "SurveyQuestions" },
   ];
 
   return (
@@ -142,6 +145,23 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/superadmin/view-questions"
+  element={
+    <ProtectedRoute>
+      <QuestionsView />
+    </ProtectedRoute>
+  }
+/>
+
+        <Route
+  path="/superadmin/survey-questions"
+  element={
+    <ProtectedRoute>
+      <SurveyQuestions />
+    </ProtectedRoute>
+  }
+/>
         
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
