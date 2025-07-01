@@ -159,13 +159,13 @@
 
 
 
-
 import React, { useEffect, useState } from "react";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import "./UserManagement.css";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
 
-const UserTable = ({ onAdd }) => {
+const UserTable = ({ onAdd, onEdit }) => {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -207,23 +207,44 @@ const UserTable = ({ onAdd }) => {
   }, [searchTerm, users]);
 
   const handleDelete = (userId) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      fetch(`http://175.29.21.7:8006/users/${userId}/`, {
-        method: "DELETE",
-      })
-        .then((response) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This user will be permanently deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`http://175.29.21.7:8006/users/${userId}/`, {
+            method: "DELETE",
+          });
           if (!response.ok) throw new Error("Failed to delete user");
-          fetchUsers(); // Refresh the user list after deletion
-        })
-        .catch((error) => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Deleted!',
+            text: 'User deleted successfully.',
+            confirmButtonColor: '#3085d6'
+          });
+          fetchUsers();
+        } catch (error) {
           console.error("Error deleting user:", error);
-        });
-    }
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Failed to delete user. Please try again.',
+            confirmButtonColor: '#d33'
+          });
+        }
+      }
+    });
   };
 
-  const handleEdit = (user) => {
-    navigate(`/users/edit/${user.user_id}`, { state: { user } });
-  };
+ const handleEdit = (user) => {
+  if (onEdit) onEdit(user);
+};
 
   const handleView = (userId) => {
     navigate(`/users/view/${userId}`);
@@ -239,11 +260,11 @@ const UserTable = ({ onAdd }) => {
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return 'Invalid date';
-      
+
       const day = date.getDate().toString().padStart(2, '0');
       const month = (date.getMonth() + 1).toString().padStart(2, '0');
       const year = date.getFullYear();
-      
+
       return `${day}/${month}/${year}`;
     } catch (e) {
       return 'Invalid date';
@@ -252,7 +273,6 @@ const UserTable = ({ onAdd }) => {
 
   return (
     <div className="container-fluid user-management-container">
-      {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-3 flex-wrap">
         <div>
           <h2 className="user-management-title mb-0">User Management</h2>
@@ -261,7 +281,6 @@ const UserTable = ({ onAdd }) => {
         <button className="btn btn-primary" onClick={onAdd}>Add New User</button>
       </div>
 
-      {/* Controls */}
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap">
         <div className="d-flex align-items-center gap-2">
           Show
@@ -286,7 +305,6 @@ const UserTable = ({ onAdd }) => {
         />
       </div>
 
-      {/* Table */}
       <div className="table-responsive mb-4">
         <table className="table">
           <thead className="product-table-header">
@@ -340,26 +358,25 @@ const UserTable = ({ onAdd }) => {
                   <td>{user.companies && user.companies.join(', ')}</td>
                   <td>{user.created_by}</td>
                   <td>{user.updated_by}</td>
-                 <td>
-  <div className="action-icons">
-    <FaEye
-      title="View"
-      onClick={() => handleView(user.user_id)}
-      className="action-icon view-icon"
-    />
-    <FaEdit
-      title="Edit"
-      onClick={() => handleEdit(user)}
-      className="action-icon edit-icon"
-    />
-    <FaTrash
-      title="Delete"
-      onClick={() => handleDelete(user.user_id)}
-      className="action-icon delete-icon"
-    />
-  </div>
-</td>
-
+                  <td>
+                    <div className="action-icons">
+                      <FaEye
+                        title="View"
+                        onClick={() => handleView(user.user_id)}
+                        className="action-icon view-icon"
+                      />
+                      <FaEdit
+                        title="Edit"
+                        onClick={() => handleEdit(user)}
+                        className="action-icon edit-icon"
+                      />
+                      <FaTrash
+                        title="Delete"
+                        onClick={() => handleDelete(user.user_id)}
+                        className="action-icon delete-icon"
+                      />
+                    </div>
+                  </td>
                 </tr>
               ))
             ) : (
@@ -371,7 +388,6 @@ const UserTable = ({ onAdd }) => {
         </table>
       </div>
 
-      {/* Pagination Controls */}
       <div className="pagination-controls d-flex justify-content-center mt-3">
         <button
           className="btn btn-outline-primary me-2"

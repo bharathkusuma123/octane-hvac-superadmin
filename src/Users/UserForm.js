@@ -4,7 +4,7 @@ import { AuthContext } from "../AuthContext/AuthContext";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import Swal from "sweetalert2";
 
-const UserForm = ({ onCancel, onSave }) => {
+const UserForm = ({ onCancel, onSave, initialData = null }) => {
   const { userId, userRole } = useContext(AuthContext);
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,6 +38,18 @@ const UserForm = ({ onCancel, onSave }) => {
       [name]: type === "number" ? value.trim() : value,
     }));
   };
+  useEffect(() => {
+  if (initialData) {
+    setFormData((prev) => ({
+      ...prev,
+      ...initialData,
+      company: initialData.companies || [],
+      current_password: "", // passwords not prefilled
+      last_password: ""
+    }));
+  }
+}, [initialData]);
+
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -72,76 +84,84 @@ const UserForm = ({ onCancel, onSave }) => {
     setFormData((prev) => ({ ...prev, status: e.target.value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsSubmitting(true);
 
+  const safeTrim = (val) => (val && typeof val === "string" ? val.trim() : "");
 
-    const safeTrim = (val) => (val && typeof val === "string" ? val.trim() : "");
+  const payload = {
+    user_id: safeTrim(formData.user_id),
+    companies: formData.company && formData.company.length > 0 ? formData.company : [],
+    username: safeTrim(formData.username) || null,
+    full_name: safeTrim(formData.full_name) || null,
+    email: safeTrim(formData.email) || null,
+    role: formData.role || null,
+    default_company: formData.default_company || null,
+    mobile: safeTrim(formData.mobile) || null,
+    telephone: safeTrim(formData.telephone) || null,
+    city: safeTrim(formData.city) || null,
+    country_code: safeTrim(formData.country_code) || null,
+    address: safeTrim(formData.address) || null,
+    last_password: formData.last_password || null,
+    password: formData.current_password || null,
+    status: formData.status || "Active",
+    remarks: safeTrim(formData.remarks) || null,
+    created_by: userId,
+    updated_by: userId,
+    switch_company_allowed: formData.switch_company_allowed,
+  };
 
-    const payload = {
-      user_id: safeTrim(formData.user_id),
-      companies: formData.company && formData.company.length > 0 ? formData.company : [],
-      username: safeTrim(formData.username) || null,
-      full_name: safeTrim(formData.full_name) || null,
-      email: safeTrim(formData.email) || null,
-      role: formData.role || null,
-      default_company: formData.default_company || null,
-      mobile: safeTrim(formData.mobile) || null,           
-      telephone: safeTrim(formData.telephone) || null,   
-      city: safeTrim(formData.city) || null,
-      country_code: safeTrim(formData.country_code) || null,
-      address: safeTrim(formData.address) || null,
-      last_password: formData.last_password || null,
-      password: formData.current_password || null,
-      status: formData.status || "Active",
-      remarks: safeTrim(formData.remarks) || null,
-      created_by: userId,
-      updated_by: userId,
-      switch_company_allowed: formData.switch_company_allowed,
-    };
+  const isEditing = !!formData?.user_id && !!initialData;
 
-    try {
-      const response = await fetch("http://175.29.21.7:8006/users/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+  const url = isEditing
+    ? `http://175.29.21.7:8006/users/${formData.user_id}/`
+    : "http://175.29.21.7:8006/users/";
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: `Failed to save user: ${errorData.message || 'Unknown error'}`,
-          confirmButtonColor: "#d33",
-        });
-        return;
-      }
+  const method = isEditing ? "PUT" : "POST";
 
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "User saved successfully!",
-        confirmButtonColor: "#3085d6",
-      }).then(() => {
-        if (onSave) onSave();
-      });
-    } catch (error) {
-      console.error('Error submitting form:', error);
+  try {
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "An error occurred. Please try again later.",
+        text: `Failed to ${isEditing ? 'update' : 'save'} user: ${result.message || 'Unknown error'}`,
         confirmButtonColor: "#d33",
       });
-    } finally {
-      setIsSubmitting(false);
+      return;
     }
-  };
+
+    Swal.fire({
+      icon: "success",
+      title: "Success!",
+      text: `User ${isEditing ? 'updated' : 'saved'} successfully!`,
+      confirmButtonColor: "#3085d6",
+    }).then(() => {
+      if (onSave) onSave();
+    });
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "An error occurred. Please try again later.",
+      confirmButtonColor: "#d33",
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   return (
     <div className="container mt-4 service-request-form">
