@@ -58,18 +58,27 @@
 
 
 
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from "../AuthContext/AuthContext";
 import axios from 'axios';
 import Swal from 'sweetalert2';
-// import './CompanyInformation.css';
 
 const SurveyQuestions = () => {
   const { userId } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const questionData = location.state?.question || null;
+
   const [questionText, setQuestionText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
+  const isEditMode = !!questionData;
+
+  useEffect(() => {
+    if (isEditMode) {
+      setQuestionText(questionData.question_text);
+    }
+  }, [questionData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -78,47 +87,54 @@ const SurveyQuestions = () => {
     const data = {
       question_text: questionText,
       rating_type: "Rating",
-      created_by: userId,
       updated_by: userId,
+      created_by: isEditMode ? questionData.created_by : userId
     };
 
     try {
-      await axios.post('http://175.29.21.7:8006/survey-questions/', data);
-
-      Swal.fire({
-        icon: "success",
-        title: "Success!",
-        text: "Survey question added successfully!",
-        confirmButtonColor: "#3085d6",
-      }).then(() => navigate(-1)); // Go back on confirmation
-    } catch (error) {
-      console.error(error);
+      if (isEditMode) {
+        await axios.put(`http://175.29.21.7:8006/survey-questions/${questionData.question_id}/`, data);
+        Swal.fire({
+          icon: "success",
+          title: "Updated!",
+          text: "Survey question updated successfully!",
+        });
+      } else {
+        await axios.post(`http://175.29.21.7:8006/survey-questions/`, data);
+        Swal.fire({
+          icon: "success",
+          title: "Added!",
+          text: "Survey question added successfully!",
+        });
+      }
+      navigate(-1);
+    } catch (err) {
+      console.error(err);
       Swal.fire({
         icon: "error",
-        title: "Error!",
-        text: "Failed to add survey question. Please try again.",
-        confirmButtonColor: "#d33",
+        title: "Failed!",
+        text: "Could not save the question. Try again.",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleCancel = () => {
-    navigate(-1); // Go back
-  };
+  const handleCancel = () => navigate(-1);
 
   return (
-    <div className="container-fluid mt-4 service-request-form">
+    <div className="container mt-4 service-request-form">
       <div className="card">
         <div className="card-header">
-          <h5 className="mb-1">Add Survey Question</h5>
-          <h6 style={{ color: 'white' }}>Fill in the survey question details below</h6>
+          <h5>{isEditMode ? "Edit" : "Add"} Survey Question</h5>
+          <h6 style={{ color: 'white' }}>
+            {isEditMode ? "Update question details below" : "Fill in the survey question details below"}
+          </h6>
         </div>
         <div className="card-body">
           <form onSubmit={handleSubmit}>
             <div className="row g-3">
-              <div className="col-md-12">
+              <div className="col-md-4">
                 <label htmlFor="questionText" className="form-label">Question Text</label>
                 <input
                   type="text"
@@ -132,14 +148,9 @@ const SurveyQuestions = () => {
 
               <div className="d-flex justify-content-center mt-3 gap-3">
                 <button type="submit" className="submit-btn" disabled={isSubmitting}>
-                  {isSubmitting ? 'Submitting...' : 'Submit Question'}
+                  {isSubmitting ? 'Submitting...' : (isEditMode ? 'Update Question' : 'Submit Question')}
                 </button>
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleCancel}
-                  disabled={isSubmitting}
-                >
+                <button type="button" className="btn btn-secondary" onClick={handleCancel} disabled={isSubmitting}>
                   Cancel
                 </button>
               </div>
@@ -152,3 +163,4 @@ const SurveyQuestions = () => {
 };
 
 export default SurveyQuestions;
+

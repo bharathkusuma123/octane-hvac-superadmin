@@ -88,7 +88,6 @@
 
 
 
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -142,6 +141,25 @@ const QuestionsView = () => {
   const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
   const currentQuestions = filteredQuestions.slice(indexOfFirstEntry, indexOfLastEntry);
   const totalPages = Math.ceil(filteredQuestions.length / entriesPerPage);
+
+  const handleEdit = (question) => {
+    navigate("/superadmin/survey-questions", { state: { question } });
+  };
+
+  const handleDelete = async (questionId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this question?");
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`http://175.29.21.7:8006/survey-questions/${questionId}/`);
+      const updatedQuestions = questions.filter(q => q.question_id !== questionId);
+      setQuestions(updatedQuestions);
+      setFilteredQuestions(updatedQuestions);
+    } catch (error) {
+      console.error("Delete error:", error);
+      alert("Failed to delete the question. Please try again.");
+    }
+  };
 
   return (
     <div className="container-fluid my-4">
@@ -217,9 +235,18 @@ const QuestionsView = () => {
                         <td>{formatDate(q.created_at)}</td>
                         <td>
                           <div className="action-icons d-flex gap-2">
-                            <FaEye title="View" className="action-icon view-icon" />
-                            <FaEdit title="Edit" className="action-icon edit-icon" />
-                            <FaTrash title="Delete" className="action-icon delete-icon" />
+                            <FaEdit
+                              title="Edit"
+                              className="action-icon edit-icon"
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleEdit(q)}
+                            />
+                            <FaTrash
+                              title="Delete"
+                              className="action-icon delete-icon"
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleDelete(q.question_id)}
+                            />
                           </div>
                         </td>
                       </tr>
@@ -238,7 +265,9 @@ const QuestionsView = () => {
                 className="btn btn-outline-primary me-2"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(prev => prev - 1)}
-              >Previous</button>
+              >
+                Previous
+              </button>
 
               <span className="align-self-center mx-2">
                 Page {currentPage} of {totalPages}
@@ -248,7 +277,9 @@ const QuestionsView = () => {
                 className="btn btn-outline-primary ms-2"
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(prev => prev + 1)}
-              >Next</button>
+              >
+                Next
+              </button>
             </div>
           </>
         )}
