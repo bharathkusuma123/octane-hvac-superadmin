@@ -93,7 +93,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Questions.css';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
-
+import Swal from 'sweetalert2';
 const QuestionsView = () => {
   const [questions, setQuestions] = useState([]);
   const [filteredQuestions, setFilteredQuestions] = useState([]);
@@ -145,22 +145,41 @@ const QuestionsView = () => {
   const handleEdit = (question) => {
     navigate("/superadmin/survey-questions", { state: { question } });
   };
+const handleDelete = async (questionId) => {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This question will be permanently deleted!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(`http://175.29.21.7:8006/survey-questions/${questionId}/`);
+        const updatedQuestions = questions.filter(q => q.question_id !== questionId);
+        setQuestions(updatedQuestions);
+        setFilteredQuestions(updatedQuestions);
 
-  const handleDelete = async (questionId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this question?");
-    if (!confirmDelete) return;
-
-    try {
-      await axios.delete(`http://175.29.21.7:8006/survey-questions/${questionId}/`);
-      const updatedQuestions = questions.filter(q => q.question_id !== questionId);
-      setQuestions(updatedQuestions);
-      setFilteredQuestions(updatedQuestions);
-    } catch (error) {
-      console.error("Delete error:", error);
-      alert("Failed to delete the question. Please try again.");
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: 'Survey question deleted successfully.',
+          confirmButtonColor: '#3085d6'
+        });
+      } catch (error) {
+        console.error("Delete error:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: 'Failed to delete the question. Please try again.',
+          confirmButtonColor: '#d33'
+        });
+      }
     }
-  };
-
+  });
+};
   return (
     <div className="container-fluid my-4">
       <div className="company-table-box p-4">

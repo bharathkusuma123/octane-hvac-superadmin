@@ -436,7 +436,7 @@ import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+import Swal from 'sweetalert2';
 const CompanyTable = ({ onAdd, onEdit }) => {
   const [companies, setCompanies] = useState([]);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
@@ -476,18 +476,39 @@ const CompanyTable = ({ onAdd, onEdit }) => {
     setCurrentPage(1);
   }, [searchTerm, companies]);
 
-  const handleDelete = async (company_id) => {
-    if (!window.confirm("Are you sure you want to delete this company?")) return;
-
-    try {
-      await axios.delete(`http://175.29.21.7:8006/companies/${company_id}/`);
-      toast.success("Company deleted successfully!");
-      fetchCompanies();
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to delete company.");
+const handleDelete = async (company_id) => {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This company will be permanently deleted!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Yes, delete it!'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(`http://175.29.21.7:8006/companies/${company_id}/`);
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: 'Company deleted successfully!',
+          confirmButtonColor: '#3085d6',
+        });
+        fetchCompanies();
+      } catch (error) {
+        console.error(error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Failed!',
+          text: 'Could not delete the company. Please try again.',
+          confirmButtonColor: '#d33',
+        });
+      }
     }
-  };
+  });
+};
+
 
   const indexOfLastEntry = currentPage * entriesPerPage;
   const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
