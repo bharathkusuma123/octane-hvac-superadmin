@@ -1,0 +1,33 @@
+.company-table-box {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+}
+
+/* .company-form-heading {
+  font-size: 24px;
+  font-weight: bold;
+} */
+
+.product-table-header th {
+  background-color: #f0f4f8;
+  font-weight: 600;
+  text-align: center;
+}
+
+.action-icons .action-icon {
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* .view-icon {
+  color: #0d6efd;
+}
+
+.edit-icon {
+  color: #ffc107;
+}
+
+.delete-icon {
+  color: #dc3545;
+} */
