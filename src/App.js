@@ -20,6 +20,7 @@ import CustomerComplaints from "./CustomerComplaints/CustomerComplaints";
 import CustomerSatisfactionSurvey from "./CustomerSatisfactionSurvey/CustomerSatisfactionSurvey";
 import ServiceCompletion from "./ServiceCompletionForm/ServiceCompletion";
 import UserManagement from "./Users/UserManagement"
+import UserView from './Users/UserView'; 
 import SurveyQuestions from "./Survey/SurveyQuestions";
 import QuestionsView from "./Survey/QuestionsView";
 import logo from "./Logos/hvac-logo-new.jpg";
@@ -145,6 +146,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+         <Route path="/users/view/:userId"  element={
+             <ProtectedRoute><UserView  /></ProtectedRoute>} />
         <Route
   path="/superadmin/view-questions"
   element={

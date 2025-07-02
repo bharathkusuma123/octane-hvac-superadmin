@@ -246,9 +246,9 @@ const UserTable = ({ onAdd, onEdit }) => {
   if (onEdit) onEdit(user);
 };
 
-  const handleView = (userId) => {
-    navigate(`/users/view/${userId}`);
-  };
+  const handleView = (user) => {
+  navigate(`/users/view/${user.user_id}`, { state: { user } });
+};
 
   const indexOfLastEntry = currentPage * entriesPerPage;
   const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
@@ -360,11 +360,11 @@ const UserTable = ({ onAdd, onEdit }) => {
                   <td>{user.updated_by}</td>
                   <td>
                     <div className="action-icons">
-                      <FaEye
-                        title="View"
-                        onClick={() => handleView(user.user_id)}
-                        className="action-icon view-icon"
-                      />
+                 <FaEye
+  title="View"
+  onClick={() => handleView(user)}
+  className="action-icon view-icon"
+/>
                       <FaEdit
                         title="Edit"
                         onClick={() => handleEdit(user)}

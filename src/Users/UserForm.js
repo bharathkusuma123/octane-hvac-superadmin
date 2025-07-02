@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useContext } from "react";
 import "./UserManagement.css";
 import { AuthContext } from "../AuthContext/AuthContext";
@@ -5,17 +6,22 @@ import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import Swal from "sweetalert2";
 
 const UserForm = ({ onCancel, onSave, initialData = null }) => {
-  const { userId, userRole } = useContext(AuthContext);
-  
+  const { userId } = useContext(AuthContext);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [companies, setCompanies] = useState([]);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showLastPassword, setShowLastPassword] = useState(false);
+
+  const isEditing = !!initialData;
+
   const [formData, setFormData] = useState({
     user_id: "",
     username: "",
     full_name: "",
     email: "",
     role: "Admin",
-    mobile: "",            
-    telephone: "",       
+    mobile: "",
+    telephone: "",
     city: "",
     country_code: "",
     address: "",
@@ -25,31 +31,20 @@ const UserForm = ({ onCancel, onSave, initialData = null }) => {
     remarks: "",
     default_company: "",
     switch_company_allowed: false,
-    company: [], 
+    company: [],
   });
-  const [companies, setCompanies] = useState([]);
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showLastPassword, setShowLastPassword] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value, type } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "number" ? value.trim() : value,
-    }));
-  };
   useEffect(() => {
-  if (initialData) {
-    setFormData((prev) => ({
-      ...prev,
-      ...initialData,
-      company: initialData.companies || [],
-      current_password: "", // passwords not prefilled
-      last_password: ""
-    }));
-  }
-}, [initialData]);
-
+    if (initialData) {
+      setFormData((prev) => ({
+        ...prev,
+        ...initialData,
+        company: initialData.companies || [],
+        current_password: "",
+        last_password: "",
+      }));
+    }
+  }, [initialData]);
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -80,88 +75,111 @@ const UserForm = ({ onCancel, onSave, initialData = null }) => {
     fetchCompanies();
   }, []);
 
+  const handleChange = (e) => {
+    const { name, value, type } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "number" ? value.trim() : value,
+    }));
+  };
+
   const handleStatusChange = (e) => {
     setFormData((prev) => ({ ...prev, status: e.target.value }));
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
-  const safeTrim = (val) => (val && typeof val === "string" ? val.trim() : "");
+    const safeTrim = (val) => (val && typeof val === "string" ? val.trim() : "");
 
-  const payload = {
-    user_id: safeTrim(formData.user_id),
-    companies: formData.company && formData.company.length > 0 ? formData.company : [],
-    username: safeTrim(formData.username) || null,
-    full_name: safeTrim(formData.full_name) || null,
-    email: safeTrim(formData.email) || null,
-    role: formData.role || null,
-    default_company: formData.default_company || null,
-    mobile: safeTrim(formData.mobile) || null,
-    telephone: safeTrim(formData.telephone) || null,
-    city: safeTrim(formData.city) || null,
-    country_code: safeTrim(formData.country_code) || null,
-    address: safeTrim(formData.address) || null,
-    last_password: formData.last_password || null,
-    password: formData.current_password || null,
-    status: formData.status || "Active",
-    remarks: safeTrim(formData.remarks) || null,
-    created_by: userId,
-    updated_by: userId,
-    switch_company_allowed: formData.switch_company_allowed,
-  };
-
-  const isEditing = !!formData?.user_id && !!initialData;
-
-  const url = isEditing
-    ? `http://175.29.21.7:8006/users/${formData.user_id}/`
-    : "http://175.29.21.7:8006/users/";
-
-  const method = isEditing ? "PUT" : "POST";
-
-  try {
-    const response = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
+    // Password validation for create only
+    if (!isEditing && formData.current_password !== formData.last_password) {
       Swal.fire({
         icon: "error",
-        title: "Error",
-        text: `Failed to ${isEditing ? 'update' : 'save'} user: ${result.message || 'Unknown error'}`,
+        title: "Password Mismatch",
+        text: "Passwords do not match.",
         confirmButtonColor: "#d33",
       });
+      setIsSubmitting(false);
       return;
     }
 
-    Swal.fire({
-      icon: "success",
-      title: "Success!",
-      text: `User ${isEditing ? 'updated' : 'saved'} successfully!`,
-      confirmButtonColor: "#3085d6",
-    }).then(() => {
-      if (onSave) onSave();
-    });
-  } catch (error) {
-    console.error("Error submitting form:", error);
-    Swal.fire({
-      icon: "error",
-      title: "Error",
-      text: "An error occurred. Please try again later.",
-      confirmButtonColor: "#d33",
-    });
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+    const payload = {
+      user_id: safeTrim(formData.user_id),
+      companies: formData.company && formData.company.length > 0 ? formData.company : [],
+      username: safeTrim(formData.username) || null,
+      full_name: safeTrim(formData.full_name) || null,
+      email: safeTrim(formData.email) || null,
+      role: formData.role || null,
+      default_company: formData.default_company || null,
+      mobile: safeTrim(formData.mobile) || null,
+      telephone: safeTrim(formData.telephone) || null,
+      city: safeTrim(formData.city) || null,
+      country_code: safeTrim(formData.country_code) || null,
+      address: safeTrim(formData.address) || null,
+      status: formData.status || "Active",
+      remarks: safeTrim(formData.remarks) || null,
+      created_by: userId,
+      updated_by: userId,
+      switch_company_allowed: formData.switch_company_allowed,
+    };
 
+    // Add password fields only when creating
+    if (!isEditing) {
+      payload.password = formData.current_password || null;
+      payload.last_password = formData.last_password || null;
+    }
+
+    const url = isEditing
+      ? `http://175.29.21.7:8006/users/${formData.user_id}/`
+      : "http://175.29.21.7:8006/users/";
+
+    const method = isEditing ? "PUT" : "POST";
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: `Failed to ${isEditing ? "update" : "save"} user: ${
+            result.message || "Unknown error"
+          }`,
+          confirmButtonColor: "#d33",
+        });
+        return;
+      }
+
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: `User ${isEditing ? "updated" : "saved"} successfully!`,
+        confirmButtonColor: "#3085d6",
+      }).then(() => {
+        if (onSave) onSave();
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred. Please try again later.",
+        confirmButtonColor: "#d33",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="container mt-4 service-request-form">
@@ -190,6 +208,8 @@ const handleSubmit = async (e) => {
                     value={formData.user_id}
                     onChange={handleChange}
                     required
+                    disabled={!!initialData}
+
                   />
                 </div>
                 <div className="col-md-4">
@@ -413,49 +433,55 @@ const handleSubmit = async (e) => {
               {/* Account Settings */}
               <div className="row g-3 mb-4">
                 <h5>Account Settings</h5>
-                <div className="col-md-4">
-                  <label className="form-label">Current Password</label>
-                  <div className="input-group">
-                    <input
-                      type={showCurrentPassword ? "text" : "password"}
-                      name="current_password"
-                      placeholder="Enter password"
-                      className="form-control"
-                      value={formData.current_password}
-                      onChange={handleChange}
-                      required
-                    />
-                    <button
-                      className="btn btn-outline-secondary"
-                      type="button"
-                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                    >
-                      {showCurrentPassword ? <EyeSlashFill /> : <EyeFill />}
-                    </button>
-                  </div>
-                </div>
+                {/* Current Password (conditionally required) */}
+      {!isEditing && (
+        <div className="col-md-4">
+          <label className="form-label">Current Password</label>
+          <div className="input-group">
+            <input
+              type={showCurrentPassword ? "text" : "password"}
+              name="current_password"
+              placeholder="Enter password"
+              className="form-control"
+              value={formData.current_password}
+              onChange={handleChange}
+              required={!isEditing}
+            />
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+            >
+              {showCurrentPassword ? <EyeSlashFill /> : <EyeFill />}
+            </button>
+          </div>
+        </div>
+      )}
 
-                <div className="col-md-4">
-                  <label className="form-label">Confirm Password</label>
-                  <div className="input-group">
-                    <input
-                      type={showLastPassword ? "text" : "password"}
-                      name="last_password"
-                      placeholder="Confirm password"
-                      className="form-control"
-                      value={formData.last_password}
-                      onChange={handleChange}
-                      required
-                    />
-                    <button
-                      className="btn btn-outline-secondary"
-                      type="button"
-                      onClick={() => setShowLastPassword(!showLastPassword)}
-                    >
-                      {showLastPassword ? <EyeSlashFill /> : <EyeFill />}
-                    </button>
-                  </div>
-                </div>
+                 {/* Confirm Password (conditionally required) */}
+      {!isEditing && (
+        <div className="col-md-4">
+          <label className="form-label">Confirm Password</label>
+          <div className="input-group">
+            <input
+              type={showLastPassword ? "text" : "password"}
+              name="last_password"
+              placeholder="Confirm password"
+              className="form-control"
+              value={formData.last_password}
+              onChange={handleChange}
+              required={!isEditing}
+            />
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={() => setShowLastPassword(!showLastPassword)}
+            >
+              {showLastPassword ? <EyeSlashFill /> : <EyeFill />}
+            </button>
+          </div>
+        </div>
+      )}
 
                 <div className="col-md-4">
                   <label className="form-label">Status</label>

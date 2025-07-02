@@ -1,0 +1,43 @@
+
+
+
+
+
+.service-request-formview table {
+  font-size: 0.95rem;
+}
+
+.service-request-formview .table th {
+  width: 25%;
+  background-color: #f5f7fa;
+  font-weight: 600;
+  color: #333;
+}
+
+.service-request-formview .table td {
+  background-color: #ffffff;
+  color: #555;
+}
+
+.service-request-formview .card-header {
+  color: white;
+  background-color: #0096D6;
+}
+
+.service-request-formview .card-header h5 {
+  font-weight: bold;
+  color: white;
+}
+
+.service-request-formview .card-header .btn-light {
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  background-color: #f8f9fa;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.service-request-formview .card-header .btn-light:hover {
+  background-color: #e2e6ea;
+}
