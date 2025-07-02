@@ -36,7 +36,7 @@ const UserView = () => {
 
         <div className="card-body">
           <div className="table-responsive">
-            <table className="table table-bordered table-striped">
+            <table className="table table-bordered ">
               <tbody>
                 <tr>
                   <th>User ID</th>
