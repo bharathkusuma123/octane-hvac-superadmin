@@ -40,9 +40,9 @@ const TopNavbar = () => {
 
   const navItems = [
     { path: "/superadmin/company-information", label: "Company Information" },
-    { path: "/superadmin/service-completion", label: "Service Completion" },
-    { path: "/superadmin/customer-satisfaction-survey", label: "Customer Satisfaction Survey" },
-    { path: "/superadmin/customer-complaints", label: "Customer Complaints" },
+    // { path: "/superadmin/service-completion", label: "Service Completion" },
+    // { path: "/superadmin/customer-satisfaction-survey", label: "Customer Satisfaction Survey" },
+    // { path: "/superadmin/customer-complaints", label: "Customer Complaints" },
     { path: "/superadmin/user-management", label: "Users" },
     // { path: "/superadmin/survey-questions", label: "SurveyQuestions" },
     { path: "/superadmin/view-questions", label: "SurveyQuestions" },
