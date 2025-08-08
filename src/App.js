@@ -9,34 +9,38 @@ import {
   useNavigate,
   Link,
 } from "react-router-dom";
+
 import "./App.css";
-import { AuthContext } from "./AuthContext/AuthContext";
 import AuthProvider from "./AuthContext/AuthContext";
 
+// Pages
 import SuperAdminLogin from "./Login/Login";
 import CompanyInformation from "./Company/CompanyInformation";
 import CompanyView from "./Company/CompanyView";
 import CustomerComplaints from "./CustomerComplaints/CustomerComplaints";
 import CustomerSatisfactionSurvey from "./CustomerSatisfactionSurvey/CustomerSatisfactionSurvey";
 import ServiceCompletion from "./ServiceCompletionForm/ServiceCompletion";
-import UserManagement from "./Users/UserManagement"
-import UserView from './Users/UserView'; 
+import UserManagement from "./Users/UserManagement";
+import UserView from "./Users/UserView";
 import SurveyQuestions from "./Survey/SurveyQuestions";
 import QuestionsView from "./Survey/QuestionsView";
+import Reports from "./Reports/CustomerReports";
+import SuperAdmin from "./Dashboard/SuperAdminDashboard"
+
 import logo from "./Logos/hvac-logo-new.jpg";
 
-// 🔹 TopNavbar
+// 🔹 Top Navbar
 const TopNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const userRole = localStorage.getItem("userRole");
 
+  if (userRole !== "superadmin") return null;
+
   const handleLogout = () => {
     localStorage.removeItem("userRole");
     navigate("/");
   };
-
-  if (userRole !== "superadmin") return null;
 
   const navItems = [
     { path: "/superadmin/company-information", label: "Company Information" },
@@ -44,20 +48,17 @@ const TopNavbar = () => {
     { path: "/superadmin/customer-satisfaction-survey", label: "Customer Satisfaction Survey" },
     { path: "/superadmin/customer-complaints", label: "Customer Complaints" },
     { path: "/superadmin/user-management", label: "Users" },
-    // { path: "/superadmin/survey-questions", label: "SurveyQuestions" },
-    { path: "/superadmin/view-questions", label: "SurveyQuestions" },
+    { path: "/superadmin/view-questions", label: "Survey Questions" },
+    { path: "/superadmin/view-reports", label: "Reports" },
+    { path: "/superadmin/super-admin-dashboard", label:"SuperAdmin"}
   ];
 
   return (
     <nav className="top-navbar">
       <div className="nav-container">
-         <div className="nav-brand">
-            <img
-                src={logo}
-                alt="Company Logo"
-                style={{ width: "100px", height: "50px" }}
-            />
-          </div>
+        <div className="nav-brand">
+          <img src={logo} alt="Company Logo" style={{ width: "100px", height: "50px" }} />
+        </div>
         <div className="nav-links">
           {navItems.map((item) => (
             <Link
@@ -99,76 +100,117 @@ const ProtectedRoute = ({ children }) => {
 // 🔁 Main App
 function App() {
   return (
-      <AuthProvider>
-    <Router>
-      <Routes>
-        <Route path="/" element={<SuperAdminLogin />} />
-        <Route
-          path="/superadmin/company-information"
-          element={
-            <ProtectedRoute>
-              <CompanyInformation />
-            </ProtectedRoute>
-          }
-        />
-          <Route path="/companies/view/:company_id" element={
-             <ProtectedRoute><CompanyView /></ProtectedRoute>} />
-        <Route
-          path="/superadmin/service-completion"
-          element={
-            <ProtectedRoute>
-              <ServiceCompletion />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/superadmin/customer-satisfaction-survey"
-          element={
-            <ProtectedRoute>
-              <CustomerSatisfactionSurvey />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/superadmin/customer-complaints"
-          element={
-            <ProtectedRoute>
-              <CustomerComplaints />
-            </ProtectedRoute>
-          }
-        />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Public Route */}
+          <Route path="/" element={<SuperAdminLogin />} />
 
-        <Route
-          path="/superadmin/user-management"
-          element={
-            <ProtectedRoute>
-              <UserManagement />
-            </ProtectedRoute>
-          }
-        />
-         <Route path="/users/view/:userId"  element={
-             <ProtectedRoute><UserView  /></ProtectedRoute>} />
-        <Route
-  path="/superadmin/view-questions"
-  element={
-    <ProtectedRoute>
-      <QuestionsView />
-    </ProtectedRoute>
-  }
-/>
+          {/* Protected Routes */}
+          <Route
+            path="/superadmin/company-information"
+            element={
+              <ProtectedRoute>
+                <CompanyInformation />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-  path="/superadmin/survey-questions"
-  element={
-    <ProtectedRoute>
-      <SurveyQuestions />
-    </ProtectedRoute>
-  }
-/>
-        
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </Router>
+              <Route
+            path="/superadmin/super-admin-dashboard"
+            element={
+              <ProtectedRoute>
+                <SuperAdmin />
+              </ProtectedRoute>
+            }
+          />
+
+
+          <Route
+            path="/companies/view/:company_id"
+            element={
+              <ProtectedRoute>
+                <CompanyView />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/superadmin/service-completion"
+            element={
+              <ProtectedRoute>
+                <ServiceCompletion />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/superadmin/customer-satisfaction-survey"
+            element={
+              <ProtectedRoute>
+                <CustomerSatisfactionSurvey />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/superadmin/customer-complaints"
+            element={
+              <ProtectedRoute>
+                <CustomerComplaints />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/superadmin/user-management"
+            element={
+              <ProtectedRoute>
+                <UserManagement />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/users/view/:userId"
+            element={
+              <ProtectedRoute>
+                <UserView />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/superadmin/view-questions"
+            element={
+              <ProtectedRoute>
+                <QuestionsView />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/superadmin/survey-questions"
+            element={
+              <ProtectedRoute>
+                <SurveyQuestions />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/superadmin/view-reports"
+            element={
+              <ProtectedRoute>
+                <Reports />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Redirect unknown routes */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Router>
     </AuthProvider>
   );
 }
