@@ -110,9 +110,9 @@ const ActivityLogs = () => {
                 <th style={{ cursor: "pointer", background: "#0099dd", color: "white" }} onClick={() => handleSort("timestamp")}>
                   Timestamp {sortConfig.key === "timestamp" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
                 </th>
-                <th style={{ cursor: "pointer", background: "#0099dd", color: "white" }} onClick={() => handleSort("object")}>
+                {/* <th style={{ cursor: "pointer", background: "#0099dd", color: "white" }} onClick={() => handleSort("object")}>
                   Object {sortConfig.key === "object" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody>
@@ -127,7 +127,7 @@ const ActivityLogs = () => {
                     <td>{row.user}</td>
                     <td>{row.category}</td>
                     <td>{row.timestamp}</td>
-                    <td className="text-start">
+                    {/* <td className="text-start">
                       <div className="d-flex align-items-center justify-content-between">
                         <div className="d-flex gap-2">
                           <button
@@ -144,7 +144,7 @@ const ActivityLogs = () => {
                           </button>
                         </div>
                       </div>
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               )}
