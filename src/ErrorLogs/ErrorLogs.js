@@ -132,7 +132,7 @@ const ErrorLogs = () => {
                   Timestamp {sortConfig.key === "timestamp" ? (sortConfig.direction === "asc" ? "▲" : "▼") : ""}
                 </th>
                 <th style={{ background: "#0099dd", color: "white" }}>Object</th>
-                <th style={{ background: "#0099dd", color: "white" }}>Actions</th>
+                {/* <th style={{ background: "#0099dd", color: "white" }}>Actions</th> */}
               </tr>
             </thead>
             <tbody>
@@ -150,9 +150,9 @@ const ErrorLogs = () => {
                     <td>{row.errorType}</td>
                      <td>{row.timestamp}</td>
                     <td>{row.object}</td>
-                    <td>
+                    {/* <td>
                       <div className="d-flex gap-2">
-                        {/* Update and Delete buttons for each row */}
+                
                         <button className="btn btn-sm btn-primary" onClick={() => handleUpdate(row)}>
                           Update
                         </button>
@@ -160,7 +160,7 @@ const ErrorLogs = () => {
                           Delete
                         </button>
                       </div>
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               )}
