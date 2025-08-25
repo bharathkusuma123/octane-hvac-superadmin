@@ -1,0 +1,10 @@
+/* CustomerReports.css */
+.custom-thead {
+  background-color: #0099dd !important;
+  color: white !important;
+}
+
+.custom-thead th {
+  cursor: pointer;
+  user-select: none;
+}

@@ -1,0 +1,169 @@
+.super-admin-container {
+  max-width: 1280px;
+  margin: auto;
+  padding: 2.5rem 1.5rem;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
+  color: #2d3436;
+  background-color: #f5f7fa;
+}
+
+.super-admin-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #2c3e50;
+  letter-spacing: 1px;
+}
+
+.super-admin-no-content {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  background-color: #ffffff;
+  border: 1px dashed #ccc;
+  border-radius: 12px;
+}
+
+.super-admin-summary {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  color: #16a085;
+}
+
+.super-admin-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.super-admin-role-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  flex: 1 1 calc(25% - 1.5rem);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.super-admin-role-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.super-admin-role-card h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #3498db;
+  font-weight: 600;
+}
+
+.super-admin-role-card p {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
+  color: #2c3e50;
+}
+
+.super-admin-chart-container {
+  margin-bottom: 2.5rem;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.super-admin-chart-title {
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: #34495e;
+}
+
+.super-admin-table-container {
+  margin-top: 2rem;
+}
+
+.super-admin-table-title {
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #2d3436;
+}
+
+.super-admin-table-wrapper {
+  overflow-x: auto;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+.super-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.super-admin-table th,
+.super-admin-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.super-admin-table th {
+  background: #f0f4f8;
+  font-weight: 600;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.super-admin-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.super-admin-table button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #3498db;
+  transition: color 0.3s ease;
+}
+
+.super-admin-table button:hover {
+  color: #2ecc71;
+}
+
+.super-admin-log-container {
+  margin-top: 2rem;
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+.super-admin-log-container h4 {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1.2rem;
+}
+
+.super-admin-log-container ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.super-admin-log-container li {
+  line-height: 1.8;
+  color: #636e72;
+  font-size: 0.95rem;
+}
