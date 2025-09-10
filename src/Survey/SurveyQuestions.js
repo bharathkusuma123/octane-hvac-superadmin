@@ -63,6 +63,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from "../AuthContext/AuthContext";
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import baseURL from '../ApiUrl/Apiurl';
 
 const SurveyQuestions = () => {
   const { userId } = useContext(AuthContext);
@@ -93,14 +94,14 @@ const SurveyQuestions = () => {
 
     try {
       if (isEditMode) {
-        await axios.put(`http://175.29.21.7:8006/survey-questions/${questionData.question_id}/`, data);
+        await axios.put(`${baseURL}/survey-questions/${questionData.question_id}/`, data);
         Swal.fire({
           icon: "success",
           title: "Updated!",
           text: "Survey question updated successfully!",
         });
       } else {
-        await axios.post(`http://175.29.21.7:8006/survey-questions/`, data);
+        await axios.post(`${baseURL}/survey-questions/`, data);
         Swal.fire({
           icon: "success",
           title: "Added!",

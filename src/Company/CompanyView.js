@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./CompanyView.css";
+import baseURL from "../ApiUrl/Apiurl";
 
 const CompanyView = () => {
   const { company_id } = useParams();
@@ -12,7 +13,7 @@ const CompanyView = () => {
   useEffect(() => {
     const fetchCompany = async () => {
       try {
-        const response = await axios.get(`http://175.29.21.7:8006/companies/${company_id}/`);
+        const response = await axios.get(`${baseURL}/companies/${company_id}/`);
         setCompany(response.data.data);
       } catch (error) {
         console.error("Error fetching company:", error);
