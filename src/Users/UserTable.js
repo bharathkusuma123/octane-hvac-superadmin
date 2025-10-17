@@ -426,6 +426,7 @@ import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import "./UserManagement.css";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
+import baseURL from "../ApiUrl/Apiurl";
 
 const UserTable = ({ onAdd, onEdit }) => {
   const [users, setUsers] = useState([]);
@@ -440,7 +441,7 @@ const UserTable = ({ onAdd, onEdit }) => {
   }, []);
 
   const fetchUsers = () => {
-    fetch("http://175.29.21.7:8006/users/")
+    fetch(`${baseURL}/users/`)
       .then((response) => {
         if (!response.ok) throw new Error("Failed to fetch users");
         return response.json();
@@ -480,7 +481,7 @@ const UserTable = ({ onAdd, onEdit }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await fetch(`http://175.29.21.7:8006/users/${userId}/`, {
+          const response = await fetch(`${baseURL}/users/${userId}/`, {
             method: "DELETE",
           });
           if (!response.ok) throw new Error("Failed to delete user");

@@ -363,6 +363,7 @@ import axios from "axios";
 import "./CompanyInformation.css";
 import { AuthContext } from "../AuthContext/AuthContext";
 import Swal from "sweetalert2";
+import baseURL from "../ApiUrl/Apiurl";
 
 const CompanyForm = ({ onCancel, onSave, initialData = null }) => {
   const [formData, setFormData] = useState({
@@ -429,7 +430,7 @@ const CompanyForm = ({ onCancel, onSave, initialData = null }) => {
     try {
       if (initialData) {
         // Update existing company
-        await axios.put(`http://175.29.21.7:8006/companies/${formData.companyId}/`, payload);
+        await axios.put(`${baseURL}/companies/${formData.companyId}/`, payload);
         Swal.fire({
           icon: "success",
           title: "Success!",
@@ -438,7 +439,7 @@ const CompanyForm = ({ onCancel, onSave, initialData = null }) => {
         }).then(onSave);
       } else {
         // Create new company
-        await axios.post("http://175.29.21.7:8006/companies/", payload);
+        await axios.post(`${baseURL}/companies/`, payload);
         Swal.fire({
           icon: "success",
           title: "Success!",

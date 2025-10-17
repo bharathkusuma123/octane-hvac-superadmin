@@ -94,6 +94,7 @@ import axios from 'axios';
 import './Questions.css';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import Swal from 'sweetalert2';
+import baseURL from '../ApiUrl/Apiurl';
 const QuestionsView = () => {
   const [questions, setQuestions] = useState([]);
   const [filteredQuestions, setFilteredQuestions] = useState([]);
@@ -106,7 +107,7 @@ const QuestionsView = () => {
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        const res = await axios.get('http://175.29.21.7:8006/survey-questions/');
+        const res = await axios.get(`${baseURL}/survey-questions/`);
         if (res.data.status === "success") {
           const sorted = res.data.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
           setQuestions(sorted);
@@ -157,7 +158,7 @@ const handleDelete = async (questionId) => {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://175.29.21.7:8006/survey-questions/${questionId}/`);
+        await axios.delete(`${baseURL}/survey-questions/${questionId}/`);
         const updatedQuestions = questions.filter(q => q.question_id !== questionId);
         setQuestions(updatedQuestions);
         setFilteredQuestions(updatedQuestions);

@@ -4,6 +4,7 @@ import "./UserManagement.css";
 import { AuthContext } from "../AuthContext/AuthContext";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import Swal from "sweetalert2";
+import baseURL from "../ApiUrl/Apiurl";
 
 const UserForm = ({ onCancel, onSave, initialData = null }) => {
   const { userId } = useContext(AuthContext);
@@ -49,7 +50,7 @@ const UserForm = ({ onCancel, onSave, initialData = null }) => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await fetch("http://175.29.21.7:8006/companies/");
+        const response = await fetch(`${baseURL}/companies/`);
         const data = await response.json();
         if (data.status === "success") {
           setCompanies(data.data);
@@ -132,8 +133,8 @@ const UserForm = ({ onCancel, onSave, initialData = null }) => {
     }
 
     const url = isEditing
-      ? `http://175.29.21.7:8006/users/${formData.user_id}/`
-      : "http://175.29.21.7:8006/users/";
+      ? `${baseURL}/users/${formData.user_id}/`
+      : `${baseURL}/users/`;
 
     const method = isEditing ? "PUT" : "POST";
 

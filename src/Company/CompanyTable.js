@@ -437,6 +437,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
+import baseURL from "../ApiUrl/Apiurl";
 const CompanyTable = ({ onAdd, onEdit }) => {
   const [companies, setCompanies] = useState([]);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
@@ -451,7 +452,7 @@ const CompanyTable = ({ onAdd, onEdit }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://175.29.21.7:8006/companies/");
+      const response = await fetch(`${baseURL}/companies/`);
       if (!response.ok) throw new Error("HTTP error");
       const data = await response.json();
       const sortedData = data.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -488,7 +489,7 @@ const handleDelete = async (company_id) => {
   }).then(async (result) => {
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://175.29.21.7:8006/companies/${company_id}/`);
+        await axios.delete(`${baseURL}/companies/${company_id}/`);
         Swal.fire({
           icon: 'success',
           title: 'Deleted!',
