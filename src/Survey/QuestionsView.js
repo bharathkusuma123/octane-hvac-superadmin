@@ -87,7 +87,6 @@
 
 
 
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -95,9 +94,11 @@ import './Questions.css';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import baseURL from '../ApiUrl/Apiurl';
+
 const QuestionsView = () => {
   const [questions, setQuestions] = useState([]);
   const [filteredQuestions, setFilteredQuestions] = useState([]);
+  const [users, setUsers] = useState([]); // New state for users
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [entriesPerPage, setEntriesPerPage] = useState(5);
@@ -105,23 +106,39 @@ const QuestionsView = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchQuestions = async () => {
+    const fetchData = async () => {
       try {
-        const res = await axios.get(`${baseURL}/survey-questions/`);
-        if (res.data.status === "success") {
-          const sorted = res.data.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        // Fetch both questions and users
+        const [questionsRes, usersRes] = await Promise.all([
+          axios.get(`${baseURL}/survey-questions/`),
+          axios.get(`${baseURL}/users/`)
+        ]);
+
+        if (questionsRes.data.status === "success") {
+          const sorted = questionsRes.data.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
           setQuestions(sorted);
           setFilteredQuestions(sorted);
         }
+
+        if (usersRes.data) {
+          setUsers(usersRes.data);
+        }
       } catch (error) {
-        console.error("Error fetching questions:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchQuestions();
+    fetchData();
   }, []);
+
+  // Function to get username by user ID
+  const getUsernameById = (userId) => {
+    if (!userId) return 'N/A';
+    const user = users.find(u => u.user_id === userId);
+    return user ? user.username : userId; // Return username if found, otherwise return the original ID
+  };
 
   useEffect(() => {
     const filtered = questions.filter(q =>
@@ -146,41 +163,43 @@ const QuestionsView = () => {
   const handleEdit = (question) => {
     navigate("/superadmin/survey-questions", { state: { question } });
   };
-const handleDelete = async (questionId) => {
-  Swal.fire({
-    title: 'Are you sure?',
-    text: 'This question will be permanently deleted!',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6',
-    confirmButtonText: 'Yes, delete it!'
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      try {
-        await axios.delete(`${baseURL}/survey-questions/${questionId}/`);
-        const updatedQuestions = questions.filter(q => q.question_id !== questionId);
-        setQuestions(updatedQuestions);
-        setFilteredQuestions(updatedQuestions);
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Deleted!',
-          text: 'Survey question deleted successfully.',
-          confirmButtonColor: '#3085d6'
-        });
-      } catch (error) {
-        console.error("Delete error:", error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: 'Failed to delete the question. Please try again.',
-          confirmButtonColor: '#d33'
-        });
+  const handleDelete = async (questionId) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This question will be permanently deleted!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(`${baseURL}/survey-questions/${questionId}/`);
+          const updatedQuestions = questions.filter(q => q.question_id !== questionId);
+          setQuestions(updatedQuestions);
+          setFilteredQuestions(updatedQuestions);
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Deleted!',
+            text: 'Survey question deleted successfully.',
+            confirmButtonColor: '#3085d6'
+          });
+        } catch (error) {
+          console.error("Delete error:", error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: 'Failed to delete the question. Please try again.',
+            confirmButtonColor: '#d33'
+          });
+        }
       }
-    }
-  });
-};
+    });
+  };
+
   return (
     <div className="container-fluid my-4">
       <div className="company-table-box p-4">
@@ -250,8 +269,8 @@ const handleDelete = async (questionId) => {
                         <td>{q.question_id}</td>
                         <td>{q.question_text}</td>
                         <td>{q.rating_type}</td>
-                        <td>{q.created_by}</td>
-                        <td>{q.updated_by}</td>
+                        <td>{getUsernameById(q.created_by)}</td>
+                        <td>{getUsernameById(q.updated_by)}</td>
                         <td>{formatDate(q.created_at)}</td>
                         <td>
                           <div className="action-icons d-flex gap-2">
