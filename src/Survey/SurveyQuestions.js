@@ -72,22 +72,42 @@ const SurveyQuestions = () => {
   const questionData = location.state?.question || null;
 
   const [questionText, setQuestionText] = useState('');
+  const [ratingType, setRatingType] = useState('Rating');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isEditMode = !!questionData;
 
+  // Rating type options based on your model
+  const ratingTypeOptions = [
+    { value: 'Rating', label: 'Rating (1-5)' },
+    { value: 'YesNo', label: 'Yes/No' },
+    { value: 'Scale', label: 'Scale (1-10)' },
+  ];
+
   useEffect(() => {
-    if (isEditMode) {
+    if (isEditMode && questionData) {
       setQuestionText(questionData.question_text);
+      setRatingType(questionData.rating_type || 'Rating');
     }
-  }, [questionData]);
+  }, [questionData, isEditMode]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation
+    if (!questionText.trim()) {
+      Swal.fire({
+        icon: "warning",
+        title: "Missing Information",
+        text: "Please enter question text",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     const data = {
-      question_text: questionText,
-      rating_type: "Rating",
+      question_text: questionText.trim(),
+      rating_type: ratingType,
       updated_by: userId,
       created_by: isEditMode ? questionData.created_by : userId
     };
@@ -135,23 +155,57 @@ const SurveyQuestions = () => {
         <div className="card-body">
           <form onSubmit={handleSubmit}>
             <div className="row g-3">
-              <div className="col-md-4">
-                <label htmlFor="questionText" className="form-label">Question Text</label>
+              <div className="col-md-6">
+                <label htmlFor="questionText" className="form-label">
+                  Question Text <span className="text-danger">*</span>
+                </label>
                 <input
                   type="text"
                   className="form-control"
                   id="questionText"
                   value={questionText}
                   onChange={(e) => setQuestionText(e.target.value)}
+                  placeholder="Enter your survey question"
                   required
                 />
               </div>
 
+              <div className="col-md-6">
+                <label htmlFor="ratingType" className="form-label">
+                  Rating Type <span className="text-danger">*</span>
+                </label>
+                <select
+                  className="form-select"
+                  id="ratingType"
+                  value={ratingType}
+                  onChange={(e) => setRatingType(e.target.value)}
+                  required
+                >
+                  {ratingTypeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <div className="form-text">
+                  Choose how users will respond to this question
+                </div>
+              </div>
+
               <div className="d-flex justify-content-center mt-3 gap-3">
-                <button type="submit" className="submit-btn" disabled={isSubmitting}>
+                <button 
+                  type="submit" 
+                  className="submit-btn" 
+                  disabled={isSubmitting || !questionText.trim()}
+                >
                   {isSubmitting ? 'Submitting...' : (isEditMode ? 'Update Question' : 'Submit Question')}
                 </button>
-                <button type="button" className="btn btn-secondary" onClick={handleCancel} disabled={isSubmitting}>
+                <button 
+                  type="button" 
+                  className="btn btn-secondary" 
+                  onClick={handleCancel} 
+                  disabled={isSubmitting}
+                >
                   Cancel
                 </button>
               </div>
