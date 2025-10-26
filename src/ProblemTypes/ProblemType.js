@@ -3,12 +3,12 @@ import axios from "axios";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import baseURL from "../ApiUrl/Apiurl";
 import { AuthContext } from "../AuthContext/AuthContext";
+import ProblemTypeForm from "./ProblemTypeForm"; // Import the new component
 import "./ProblemType.css";
 
 const ProblemType = () => {
   const [problemTypes, setProblemTypes] = useState([]);
   const [filteredProblemTypes, setFilteredProblemTypes] = useState([]);
-  const [formData, setFormData] = useState({ name: "", description: "" });
   const [editing, setEditing] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -19,19 +19,18 @@ const ProblemType = () => {
   const { userId } = useContext(AuthContext);
   const companyId = "COMP1";
 
-  // Fetch all problem types - CORRECTED
+  // Fetch all problem types
   const fetchProblemTypes = async () => {
     try {
       const response = await axios.get(`${baseURL}/problem-types/`);
-      console.log("API Response:", response.data); // Debug log
+      console.log("API Response:", response.data);
       
-      // Extract data from the response structure
       const apiData = response.data.data || [];
       const sortedData = Array.isArray(apiData) 
         ? apiData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
         : [];
       
-      console.log("Processed Data:", sortedData); // Debug log
+      console.log("Processed Data:", sortedData);
       setProblemTypes(sortedData);
       setFilteredProblemTypes(sortedData);
     } catch (error) {
@@ -44,19 +43,8 @@ const ProblemType = () => {
     fetchProblemTypes();
   }, []);
 
-  // Handle input change - FIXED: Added proper event handling
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  // Handle create/update - CORRECTED for API response structure
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  // Handle form submission
+  const handleSubmit = async (formData) => {
     if (!formData.name.trim() || !formData.description.trim()) {
       alert("Please enter both name and description");
       return;
@@ -100,7 +88,6 @@ const ProblemType = () => {
         }
       }
 
-      setFormData({ name: "", description: "" });
       setEditing(null);
       setIsFormVisible(false);
       fetchProblemTypes();
@@ -112,7 +99,7 @@ const ProblemType = () => {
     }
   };
 
-  // Handle delete - CORRECTED for API response structure
+  // Handle delete
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this problem type?")) return;
 
@@ -130,26 +117,20 @@ const ProblemType = () => {
     }
   };
 
-  // Handle edit - FIXED: Properly set form data
+  // Handle edit
   const handleEdit = (problemType) => {
-    setFormData({
-      name: problemType.name || "",
-      description: problemType.description || "",
-    });
     setEditing(problemType);
     setIsFormVisible(true);
   };
 
-  // Handle add new - FIXED: Reset form data properly
+  // Handle add new
   const handleAdd = () => {
-    setFormData({ name: "", description: "" });
     setEditing(null);
     setIsFormVisible(true);
   };
 
   // Handle cancel
   const handleCancel = () => {
-    setFormData({ name: "", description: "" });
     setEditing(null);
     setIsFormVisible(false);
   };
@@ -186,80 +167,6 @@ const ProblemType = () => {
   const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
   const currentProblemTypes = filteredProblemTypes.slice(indexOfFirstEntry, indexOfLastEntry);
   const totalPages = Math.ceil(filteredProblemTypes.length / entriesPerPage);
-
-  // Form Component - FIXED: Added proper form structure
-  const ProblemTypeForm = () => (
-    <div className="container mt-4 service-request-form">
-      <div className="card">
-        <div className="card-header">
-          <h5 className="mb-1">{editing ? "Edit Problem Type" : "Add Problem Type"}</h5>
-          <h6 className="text" style={{ color: "white" }}>
-            Fill in problem type details below
-          </h6>
-          <h6 className="text" style={{ color: "white", fontSize: "14px", marginTop: "5px" }}>
-            User: <strong>{userId}</strong> | Company: <strong>{companyId}</strong>
-          </h6>
-        </div>
-        <div className="card-body">
-          <form onSubmit={handleSubmit}>
-            <div className="row g-3">
-              <div className="col-md-6">
-                <label className="form-label">Problem Type Name *</label>
-                <input
-                  type="text"
-                  name="name"
-                  className="form-control"
-                  placeholder="Enter Problem Type Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Description *</label>
-                <input
-                  type="text"
-                  name="description"
-                  className="form-control"
-                  placeholder="Enter Description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                />
-              </div>
-
-              <div className="col-12">
-                <div className="alert alert-info" style={{ fontSize: "14px" }}>
-                  <strong>Note:</strong> This problem type will be created with User ID: <strong>{userId}</strong> and Company ID: <strong>{companyId}</strong>
-                </div>
-              </div>
-
-              <div className="d-flex justify-content-center mt-3 gap-3">
-                <button 
-                  type="submit" 
-                  className="btn btn-primary"
-                  disabled={loading || !userId || !companyId}
-                >
-                  {loading ? (editing ? 'Updating...' : 'Submitting...') : (editing ? 'Update' : 'Submit')}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleCancel}
-                  disabled={loading}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
 
   // Table Component
   const ProblemTypeTable = () => (
@@ -379,7 +286,16 @@ const ProblemType = () => {
     </div>
   );
 
-  return isFormVisible ? <ProblemTypeForm /> : <ProblemTypeTable />;
+  return isFormVisible ? (
+    <ProblemTypeForm 
+      editing={editing}
+      onCancel={handleCancel}
+      onSubmit={handleSubmit}
+      loading={loading}
+    />
+  ) : (
+    <ProblemTypeTable />
+  );
 };
 
 export default ProblemType;
