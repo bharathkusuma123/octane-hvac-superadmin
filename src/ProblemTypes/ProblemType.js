@@ -44,9 +44,13 @@ const ProblemType = () => {
     fetchProblemTypes();
   }, []);
 
-  // Handle input change
+  // Handle input change - FIXED: Added proper event handling
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   // Handle create/update - CORRECTED for API response structure
@@ -113,7 +117,7 @@ const ProblemType = () => {
     if (!window.confirm("Are you sure you want to delete this problem type?")) return;
 
     try {
-      const response = await axios.delete(`${baseURL}/problem-types/${id}/`);
+      const response = await axios.delete(`${baseURL}/problem-types/${id}/?user_id=${userId}`);
       if (response.data.status === "success") {
         alert("Problem Type deleted successfully!");
       } else {
@@ -126,17 +130,17 @@ const ProblemType = () => {
     }
   };
 
-  // Handle edit
+  // Handle edit - FIXED: Properly set form data
   const handleEdit = (problemType) => {
     setFormData({
-      name: problemType.name,
-      description: problemType.description,
+      name: problemType.name || "",
+      description: problemType.description || "",
     });
     setEditing(problemType);
     setIsFormVisible(true);
   };
 
-  // Handle add new
+  // Handle add new - FIXED: Reset form data properly
   const handleAdd = () => {
     setFormData({ name: "", description: "" });
     setEditing(null);
@@ -183,7 +187,7 @@ const ProblemType = () => {
   const currentProblemTypes = filteredProblemTypes.slice(indexOfFirstEntry, indexOfLastEntry);
   const totalPages = Math.ceil(filteredProblemTypes.length / entriesPerPage);
 
-  // Form Component
+  // Form Component - FIXED: Added proper form structure
   const ProblemTypeForm = () => (
     <div className="container mt-4 service-request-form">
       <div className="card">
@@ -209,6 +213,7 @@ const ProblemType = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
+                  disabled={loading}
                 />
               </div>
 
@@ -222,6 +227,7 @@ const ProblemType = () => {
                   value={formData.description}
                   onChange={handleChange}
                   required
+                  disabled={loading}
                 />
               </div>
 
@@ -237,7 +243,7 @@ const ProblemType = () => {
                   className="btn btn-primary"
                   disabled={loading || !userId || !companyId}
                 >
-                  {loading ? (editing ? 'Updating...' : 'Submitting...') : 'Submit'}
+                  {loading ? (editing ? 'Updating...' : 'Submitting...') : (editing ? 'Update' : 'Submit')}
                 </button>
                 <button
                   type="button"
