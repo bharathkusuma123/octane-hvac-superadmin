@@ -1,0 +1,244 @@
+.problem-type-management-container {
+  background-color: #fff;
+  padding: 30px;
+  margin: 40px auto;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+}
+
+.problem-type-management-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.problem-type-management-subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+/* Table Styles */
+.table-responsive {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+  margin-bottom: 0;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background-color: #343a40;
+  font-weight: 600;
+  color: white;
+  vertical-align: middle;
+  padding: 12px;
+  text-align: left;
+}
+
+.table td {
+  vertical-align: middle;
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.product-table-header {
+  background-color: #343a40;
+}
+
+.product-table-header th {
+  color: white;
+  font-weight: 600;
+}
+
+/* Form Styles */
+.service-request-form .card-header {
+  color: white;
+  background-color: #0096D6;
+  padding: 20px;
+}
+
+.service-request-form .card-header h5 {
+  font-weight: bold;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.service-request-form .card-header h6 {
+  color: white;
+  margin-bottom: 0;
+}
+
+.service-request-form .card-body {
+  padding: 30px;
+}
+
+.service-request-form .form-label {
+  font-weight: 500;
+  text-align: left;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.service-request-form .form-control {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  width: 100%;
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #5c636a;
+  border-color: #565e64;
+}
+
+.btn-outline-primary {
+  color: #0d6efd;
+  border-color: #0d6efd;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.btn-outline-primary:disabled {
+  color: #6c757d;
+  border-color: #6c757d;
+  cursor: not-allowed;
+}
+
+.btn-outline-primary:disabled:hover {
+  background-color: transparent;
+  color: #6c757d;
+}
+
+/* Action Icons */
+.action-icons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: left;
+}
+
+.action-icon {
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.edit-icon {
+  color: #0d6efd;
+}
+
+.edit-icon:hover {
+  color: #0b5ed7;
+}
+
+.delete-icon {
+  color: #dc3545;
+}
+
+.delete-icon:hover {
+  color: #c82333;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+/* Form Controls */
+.form-select {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.form-control {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .problem-type-management-container {
+    padding: 20px;
+    margin: 20px auto;
+  }
+
+  .problem-type-management-title {
+    font-size: 1.5rem;
+  }
+
+  .d-flex.justify-content-between.align-items-center {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .action-icons {
+    justify-content: center;
+  }
+
+  .table-responsive {
+    font-size: 0.9rem;
+  }
+}
+
+/* Card Styles */
+.card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  border-radius: 10px 10px 0 0 !important;
+}

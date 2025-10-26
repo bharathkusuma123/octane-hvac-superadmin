@@ -276,7 +276,7 @@ import Reports from "./Reports/CustomerReports";
 import SuperAdmin from "./Dashboard/SuperAdminDashboard"
 import ActivityLogs from "./ActivityLogs/ActivityLogs";
 import ErrorLogs from "./ErrorLogs/ErrorLogs";
-
+import ProblemType from "./ProblemTypes/ProblemType";
 import logo from "./Logos/hvac-logo-new.jpg";
 
 // 🔹 Top Navbar
@@ -334,7 +334,9 @@ const TopNavbar = () => {
     { path: "/superadmin/view-reports", label: "Reports" },
     { path: "/superadmin/super-admin-dashboard", label:"SuperAdmin"},
     { path: "/superadmin/Activity-logs", label:"Activity Logs"},
-    { path: "/superadmin/Error-logs", label:"Error Logs"}
+    { path: "/superadmin/Error-logs", label:"Error Logs"},
+    { path: "/superadmin/problem-types", label: "Problem Types" },
+
   ];
 
   return (
@@ -519,6 +521,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+  path="/superadmin/problem-types"
+  element={
+    <ProtectedRoute>
+      <ProblemType />
+    </ProtectedRoute>
+  }
+/>
+
 
           {/* Redirect unknown routes */}
           <Route path="*" element={<Navigate to="/" replace />} />
