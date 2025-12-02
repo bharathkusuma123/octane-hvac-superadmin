@@ -13,6 +13,17 @@ const ActivityLogs = () => {
     { slNo: 7, user: "user5@contoso.com", category: "Storage", object: "SAS Token", timestamp: "2025-08-08 11:20 AM" },
   ];
 
+  // Function to format date from "yyyy-mm-dd HH:MM AM/PM" to "dd/mm/yyyy HH:MM AM/PM"
+  const formatDate = (dateString) => {
+    try {
+      const [datePart, timePart] = dateString.split(' ');
+      const [year, month, day] = datePart.split('-');
+      return `${day}/${month}/${year} ${timePart}`;
+    } catch (error) {
+      return dateString; // Return original if formatting fails
+    }
+  };
+
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -31,6 +42,18 @@ const ActivityLogs = () => {
       : logs;
 
     return [...base].sort((a, b) => {
+      // For timestamp sorting, we need to convert to Date objects
+      if (sortConfig.key === "timestamp") {
+        const aDate = new Date(a.timestamp);
+        const bDate = new Date(b.timestamp);
+        if (sortConfig.direction === "asc") {
+          return aDate - bDate;
+        } else {
+          return bDate - aDate;
+        }
+      }
+      
+      // For other columns
       const aVal = String(a[sortConfig.key]).toLowerCase();
       const bVal = String(b[sortConfig.key]).toLowerCase();
       if (aVal < bVal) return sortConfig.direction === "asc" ? -1 : 1;
@@ -126,7 +149,7 @@ const ActivityLogs = () => {
                     <td>{start + idx + 1}</td>
                     <td>{row.user}</td>
                     <td>{row.category}</td>
-                    <td>{row.timestamp}</td>
+                    <td>{formatDate(row.timestamp)}</td>
                     {/* <td className="text-start">
                       <div className="d-flex align-items-center justify-content-between">
                         <div className="d-flex gap-2">
