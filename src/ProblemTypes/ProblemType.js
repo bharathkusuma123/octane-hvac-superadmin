@@ -16,8 +16,7 @@ const ProblemType = () => {
   const [entriesPerPage, setEntriesPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { userId } = useContext(AuthContext);
-  const companyId = "COMP1";
+  const { userId, companyId } = useContext(AuthContext);
 
   // Fetch all problem types
   const fetchProblemTypes = async () => {
