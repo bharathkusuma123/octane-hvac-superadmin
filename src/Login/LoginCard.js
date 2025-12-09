@@ -8,6 +8,7 @@ import {
   Card,
   Alert,
   InputGroup,
+  Spinner,
 } from "react-bootstrap";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
 import logo from "../Logos/hvac-logo-new.jpg";
@@ -18,6 +19,7 @@ const LoginCard = ({
   username, // renamed prop
   password,
   showPassword,
+  loading, // Added loading prop
   setUsername, // renamed setter
   setPassword,
   setShowPassword,
@@ -26,62 +28,84 @@ const LoginCard = ({
 }) => {
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100">
-    <Container className="mt-5">
-      <Row className="justify-content-center">
-        <Col md={6} lg={4}>
-          <Card className="shadow">
-            <Card.Body>
-              <div className="text-center mb-4">
-                <img
-                  src={logo}
-                  alt="Company Logo"
-                  style={{ width: "150px", height: "80px" }}
-                />
-                <h3 className="mt-3">{title}</h3>
-              </div>
-
-              {error && <Alert variant="danger">{error}</Alert>}
-
-              <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Username</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
+      <Container className="mt-5">
+        <Row className="justify-content-center">
+          <Col md={6} lg={4}>
+            <Card className="shadow">
+              <Card.Body>
+                <div className="text-center mb-4">
+                  <img
+                    src={logo}
+                    alt="Company Logo"
+                    style={{ width: "150px", height: "80px" }}
                   />
-                </Form.Group>
+                  <h3 className="mt-3">{title}</h3>
+                </div>
 
-                <Form.Group className="mb-3">
-                  <Form.Label>Password</Form.Label>
-                  <InputGroup>
+                {error && <Alert variant="danger">{error}</Alert>}
+
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Username</Form.Label>
                     <Form.Control
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      type="text"
+                      placeholder="Enter username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                       required
+                      disabled={loading} // Disable during loading
                     />
-                    <Button
-                      variant="outline-secondary"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <EyeSlashFill /> : <EyeFill />}
-                    </Button>
-                  </InputGroup>
-                </Form.Group>
+                  </Form.Group>
 
-                 <Button variant="primary" type="submit" className="loginButton shadow">
-                  Login
-                </Button>
-              </Form>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Password</Form.Label>
+                    <InputGroup>
+                      <Form.Control
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        disabled={loading} // Disable during loading
+                      />
+                      <Button
+                        variant="outline-secondary"
+                        onClick={() => setShowPassword(!showPassword)}
+                        disabled={loading} // Disable during loading
+                      >
+                        {showPassword ? <EyeSlashFill /> : <EyeFill />}
+                      </Button>
+                    </InputGroup>
+                  </Form.Group>
+
+                  <Button 
+                    variant="primary" 
+                    type="submit" 
+                    className="loginButton shadow"
+                    disabled={loading} // Disable during loading
+                  >
+                    {loading ? (
+                      <>
+                        <Spinner
+                          as="span"
+                          animation="border"
+                          size="sm"
+                          role="status"
+                          aria-hidden="true"
+                          className="me-2"
+                        />
+                        Logging in...
+                      </>
+                    ) : (
+                      "Login"
+                    )}
+                  </Button>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </div>
   );
 };

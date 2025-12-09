@@ -47,6 +47,81 @@ const ErrorLogs = () => {
     }
   };
 
+  // Function to get date in multiple formats for search
+  const getDateFormatsForSearch = (dateString) => {
+    if (!dateString) return '';
+    
+    try {
+      const [datePart, timePart] = dateString.split(' ');
+      const [year, month, day] = datePart.split('-');
+      const [hourMinute, ampm] = timePart ? timePart.split(' ') : ['', ''];
+      
+      const formats = [
+        // Original format
+        dateString,
+        
+        // Display format
+        `${day}/${month}/${year} ${timePart}`,
+        
+        // Date only variations
+        `${day}/${month}/${year}`,
+        `${month}/${day}/${year}`,
+        `${year}-${month}-${day}`,
+        `${year}${month}${day}`,
+        `${day}-${month}-${year}`,
+        
+        // Time only variations
+        timePart,
+        hourMinute,
+        ampm,
+        
+        // Month variations
+        getMonthName(parseInt(month)),
+        getShortMonthName(parseInt(month)),
+        
+        // Year variations
+        year,
+        `${month}/${year}`,
+        
+        // Time without AM/PM
+        hourMinute ? `${hourMinute}` : '',
+        
+        // Hour variations
+        hourMinute ? hourMinute.split(':')[0] : '',
+        
+        // Day variations
+        day,
+        parseInt(day).toString(), // Remove leading zero
+        
+        // Month variations (numerical)
+        month,
+        parseInt(month).toString(), // Remove leading zero
+      ];
+      
+      return formats.join(' ');
+    } catch (error) {
+      return dateString;
+    }
+  };
+
+  // Helper function to get month name
+  const getMonthName = (monthNum) => {
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    return months[monthNum - 1] || '';
+  };
+
+  // Helper function to get short month name
+  const getShortMonthName = (monthNum) => {
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+    return months[monthNum - 1] || '';
+  };
+
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -54,30 +129,100 @@ const ErrorLogs = () => {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    const base = q
-      ? logs.filter(
-          (r) =>
-            r.user.toLowerCase().includes(q) ||
-            r.errorMessage.toLowerCase().includes(q) ||
-            r.errorType.toLowerCase().includes(q) ||
-            r.object.toLowerCase().includes(q) ||
-            r.timestamp.toLowerCase().includes(q)
-        )
-      : logs;
+    
+    if (!q) {
+      // No search term, return all logs sorted
+      const base = [...logs];
+      return base.sort((a, b) => {
+        if (sortConfig.key === "timestamp") {
+          const aDate = new Date(a.timestamp);
+          const bDate = new Date(b.timestamp);
+          return sortConfig.direction === "asc" ? aDate - bDate : bDate - aDate;
+        }
+        
+        const aVal = String(a[sortConfig.key]).toLowerCase();
+        const bVal = String(b[sortConfig.key]).toLowerCase();
+        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
 
-    return [...base].sort((a, b) => {
-      // For timestamp sorting, we need to convert to Date objects
+    // Enhanced search across ALL fields
+    const base = logs.filter((row) => {
+      // Get all searchable text for this row
+      const searchableText = [
+        // Raw fields
+        row.errorId?.toString() || '',
+        row.user || '',
+        row.errorMessage || '',
+        row.errorType || '',
+        row.object || '',
+        row.timestamp || '',
+        
+        // Email username part (without domain)
+        row.user ? row.user.split('@')[0] : '',
+        
+        // Error type variations
+        row.errorType === 'Backend' ? 'Backend Server BackendServer' : '',
+        row.errorType === 'API' ? 'API Rest API REST' : '',
+        row.errorType === 'Security' ? 'Security Auth Authentication' : '',
+        row.errorType === 'Database' ? 'Database DB SQL' : '',
+        
+        // Error message variations (common keywords)
+        row.errorMessage ? row.errorMessage.toLowerCase().split(' ').join(' ') : '',
+        row.errorMessage ? row.errorMessage.replace(/\s+/g, '') : '',
+        
+        // Object variations
+        row.object === 'Virtual Machine' ? 'Virtual Machine VM VirtualMachine' : '',
+        row.object === 'Blob Storage' ? 'Blob Storage BlobStorage Storage' : '',
+        row.object === 'Policy Rule' ? 'Policy Rule PolicyRule Rule' : '',
+        row.object === 'Firewall' ? 'Firewall FW' : '',
+        
+        // Date in multiple formats
+        getDateFormatsForSearch(row.timestamp),
+        
+        // Display formatted date
+        formatDate(row.timestamp),
+        
+        // Row index (for searching by position)
+        (row.errorId).toString(),
+        
+        // Any other potential fields (even if not in current data structure)
+        ...Object.values(row).filter(val => 
+          val !== null && val !== undefined
+        ).map(val => {
+          if (typeof val === 'string' || typeof val === 'number') {
+            return String(val);
+          }
+          if (typeof val === 'boolean') {
+            return val ? 'true yes' : 'false no';
+          }
+          if (Array.isArray(val)) {
+            return val.join(' ');
+          }
+          if (typeof val === 'object' && val !== null) {
+            return JSON.stringify(val);
+          }
+          return '';
+        })
+      ]
+      .join(' ')                    // Combine into one string
+      .toLowerCase()                // Make case-insensitive
+      .replace(/\s+/g, ' ')         // Normalize spaces
+      .trim();
+      
+      return searchableText.includes(q);
+    });
+
+    // Sort the filtered results
+    return base.sort((a, b) => {
       if (sortConfig.key === "timestamp") {
         const aDate = new Date(a.timestamp);
         const bDate = new Date(b.timestamp);
-        if (sortConfig.direction === "asc") {
-          return aDate - bDate;
-        } else {
-          return bDate - aDate;
-        }
+        return sortConfig.direction === "asc" ? aDate - bDate : bDate - aDate;
       }
       
-      // For other columns
       const aVal = String(a[sortConfig.key]).toLowerCase();
       const bVal = String(b[sortConfig.key]).toLowerCase();
       if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
@@ -129,18 +274,35 @@ const ErrorLogs = () => {
             <label className="ms-2">entries</label>
           </div>
 
-          <input
-            type="text"
-            className="form-control"
-            style={{ width: 300 }}
-            placeholder="Search user, error message, object..."
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setCurrentPage(1);
-            }}
-          />
+          <div className="d-flex align-items-center gap-2">
+            <input
+              type="text"
+              className="form-control"
+              style={{ width: 300 }}
+              placeholder="Search in all columns..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+            {search && (
+              <button 
+                className="btn btn-sm btn-outline-secondary"
+                onClick={() => setSearch('')}
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* Search Results Info */}
+        {search && (
+          <div className="alert alert-info mb-3">
+            <strong>Search Results:</strong> Found {filtered.length} error log(s) matching "{search}"
+          </div>
+        )}
 
         {/* Table */}
         <div className="table-responsive">
@@ -161,7 +323,9 @@ const ErrorLogs = () => {
             <tbody>
               {pageData.length === 0 ? (
                 <tr>
-                  <td colSpan="7">No matching logs</td>
+                  <td colSpan="7" className="text-center">
+                    {search ? `No error logs found matching "${search}"` : 'No error logs found'}
+                  </td>
                 </tr>
               ) : (
                 pageData.map((row, idx) => (
@@ -198,6 +362,41 @@ const ErrorLogs = () => {
           >
             Previous
           </button>
+          
+          <div className="d-flex align-items-center gap-1">
+            {(() => {
+              const maxVisiblePages = 5;
+              let pageNumbers = [];
+              
+              if (pageCount <= maxVisiblePages) {
+                for (let i = 1; i <= pageCount; i++) {
+                  pageNumbers.push(i);
+                }
+              } else {
+                let startPage = Math.max(1, currentPage - 2);
+                let endPage = Math.min(pageCount, startPage + maxVisiblePages - 1);
+                
+                if (endPage - startPage + 1 < maxVisiblePages) {
+                  startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                }
+                
+                for (let i = startPage; i <= endPage; i++) {
+                  pageNumbers.push(i);
+                }
+              }
+              
+              return pageNumbers.map((page) => (
+                <button
+                  key={page}
+                  className={`btn btn-sm mx-1 ${currentPage === page ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </button>
+              ));
+            })()}
+          </div>
+          
           <span className="fw-semibold">Page {currentPage} of {pageCount}</span>
           <button
             className="btn btn-outline-primary btn-sm"

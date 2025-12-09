@@ -14,3 +14,36 @@
 .shadow {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
 }
+
+/* Add to Login.css */
+
+/* Custom spinner for login button */
+.login-button-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.login-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Disable button and inputs during loading */
+.button-loading {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.input-loading {
+  background-color: #f8f9fa;
+}

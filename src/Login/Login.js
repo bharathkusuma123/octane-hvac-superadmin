@@ -10,16 +10,18 @@ const SuperAdminLogin = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-const { login } = useContext(AuthContext)
+  const [loading, setLoading] = useState(false);  // Added loading state
+  const { login } = useContext(AuthContext)
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(""); // Clear previous errors
+    setLoading(true); // Start loading
 
     try {
-      
       const response = await axios.post(`${baseURL}/user-login/`, {
-         username,   
+        username,   
         password,
       });
 
@@ -38,23 +40,25 @@ const { login } = useContext(AuthContext)
       }
     } catch (err) {
       console.error("Login error:", err);
-      setError("Invalid Username or password");
+      setError(err.response?.data?.message || "Invalid Username or password");
+    } finally {
+      setLoading(false); // Stop loading regardless of success or error
     }
   };
 
   return (
-  <LoginCard
-  title="Super Admin Login"
-  username={username}
-  password={password}
-  showPassword={showPassword}
-  setUsername={setUsername}     
-  setPassword={setPassword}
-  setShowPassword={setShowPassword}
-  handleSubmit={handleSubmit}
-  error={error}
-/>
-
+    <LoginCard
+      title="Super Admin Login"
+      username={username}
+      password={password}
+      showPassword={showPassword}
+      loading={loading}  // Pass loading prop
+      setUsername={setUsername}     
+      setPassword={setPassword}
+      setShowPassword={setShowPassword}
+      handleSubmit={handleSubmit}
+      error={error}
+    />
   );
 };
 
