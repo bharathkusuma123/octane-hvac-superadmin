@@ -7,8 +7,7 @@ const ProblemTypeForm = ({
   onSubmit, 
   loading 
 }) => {
-  const { userId } = useContext(AuthContext);
-  const companyId = "COMP1";
+  const { userId, companyId } = useContext(AuthContext);
   
   const [formData, setFormData] = useState({ 
     name: editing?.name || "", 

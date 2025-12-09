@@ -324,8 +324,7 @@ const ProblemType = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [users, setUsers] = useState([]); // To store user data for search
 
-  const { userId } = useContext(AuthContext);
-  const companyId = "COMP1";
+  const { userId, companyId } = useContext(AuthContext);
 
   // Fetch users data for username search
   const fetchUsers = async () => {
