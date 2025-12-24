@@ -278,6 +278,8 @@ import ActivityLogs from "./ActivityLogs/ActivityLogs";
 import ErrorLogs from "./ErrorLogs/ErrorLogs";
 import ProblemType from "./ProblemTypes/ProblemType";
 import logo from "./Logos/hvac-logo-new.jpg";
+import DataRetentionConfig from "./DataRetention/DataRetentionConfig";
+import EditDataRetention from "./DataRetention/EditDataRetention";
 
 // 🔹 Top Navbar
 const TopNavbar = () => {
@@ -336,6 +338,7 @@ const TopNavbar = () => {
     { path: "/superadmin/Activity-logs", label:"Activity Logs"},
     { path: "/superadmin/Error-logs", label:"Error Logs"},
     { path: "/superadmin/problem-types", label: "Problem Types" },
+     { path: "/superadmin/data-retention", label: "Data Retention" },
 
   ];
 
@@ -486,11 +489,30 @@ function App() {
             }
           />
 
+           <Route
+            path="/superadmin/data-retention"
+            element={
+              <ProtectedRoute>
+                <DataRetentionConfig />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/superadmin/survey-questions"
             element={
               <ProtectedRoute>
                 <SurveyQuestions />
+              </ProtectedRoute>
+            }
+          />
+
+          
+          <Route
+            path="/superadmin/editdatarentention/:id"
+            element={
+              <ProtectedRoute>
+                <EditDataRetention />
               </ProtectedRoute>
             }
           />
