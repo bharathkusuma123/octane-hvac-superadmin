@@ -280,6 +280,7 @@ import ProblemType from "./ProblemTypes/ProblemType";
 import logo from "./Logos/hvac-logo-new.jpg";
 import DataRetentionConfig from "./DataRetention/DataRetentionConfig";
 import EditDataRetention from "./DataRetention/EditDataRetention";
+import baseURL from "./ApiUrl/Apiurl";
 
 // 🔹 Top Navbar
 const TopNavbar = () => {
@@ -295,7 +296,7 @@ const TopNavbar = () => {
     const fetchUsername = async () => {
       if (userId) {
         try {
-          const response = await fetch("http://175.29.21.7:8006/users/");
+          const response = await fetch(`${baseURL}/users/`);
           if (response.ok) {
             const users = await response.json();
             const currentUser = users.find(user => user.user_id === userId);
