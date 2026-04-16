@@ -1,5 +1,5 @@
 .super-admin-container {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   margin: auto;
   padding: 2.5rem 1.5rem;
   font-family: 'Segoe UI', 'Roboto', sans-serif;
@@ -26,11 +26,22 @@
   border-radius: 12px;
 }
 
-.super-admin-summary {
+.super-admin-total-summary {
   font-size: 1.4rem;
   margin-bottom: 1.5rem;
   font-weight: 600;
   color: #16a085;
+  background: #ffffff;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.summary-subtitle {
+  font-size: 14px;
+  color: #666;
+  font-weight: normal;
+  margin-left: 10px;
 }
 
 .super-admin-card-container {
@@ -44,7 +55,7 @@
   background: #ffffff;
   border-radius: 12px;
   padding: 1.5rem;
-  flex: 1 1 calc(25% - 1.5rem);
+  flex: 1 1 calc(20% - 1.5rem);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -69,12 +80,38 @@
   color: #2c3e50;
 }
 
+.super-admin-role-card small {
+  display: block;
+  font-size: 11px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.super-admin-chart-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .super-admin-chart-group {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
 .super-admin-chart-container {
-  margin-bottom: 2.5rem;
   background: #ffffff;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+}
+
+.super-admin-chart-container:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
 .super-admin-chart-title {
@@ -87,27 +124,32 @@
 
 .super-admin-table-container {
   margin-top: 2rem;
-}
-
-.super-admin-table-title {
-  margin-bottom: 0.75rem;
-  font-weight: 700;
-  font-size: 1.2rem;
-  color: #2d3436;
-}
-
-.super-admin-table-wrapper {
-  overflow-x: auto;
   background: #ffffff;
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
 }
 
+.super-admin-table-title {
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #2d3436;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.super-admin-table-wrapper {
+  overflow-x: auto;
+  background: #ffffff;
+  border-radius: 8px;
+}
+
 .super-admin-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  min-width: 1000px;
 }
 
 .super-admin-table th,
@@ -123,47 +165,327 @@
   color: #2c3e50;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-size: 0.85rem;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .super-admin-table tr:hover {
   background-color: #f9f9f9;
 }
 
-.super-admin-table button {
-  background: none;
+/* Role Badges */
+.role-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-admin {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.role-service-manager {
+  background-color: #2196F3;
+  color: white;
+}
+
+.role-service-engineer {
+  background-color: #FFC107;
+  color: #333;
+}
+
+.role-super-admin {
+  background-color: #9C27B0;
+  color: white;
+}
+
+.role-unknown {
+  background-color: #95a5a6;
+  color: white;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.status-inactive {
+  background-color: #f44336;
+  color: white;
+}
+
+.status-pending {
+  background-color: #FF9800;
+  color: white;
+}
+
+.status-unknown {
+  background-color: #95a5a6;
+  color: white;
+}
+
+.copy-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
   border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
-  color: #3498db;
-  transition: color 0.3s ease;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.super-admin-table button:hover {
-  color: #2ecc71;
+.copy-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
-.super-admin-log-container {
+.super-admin-activity-log {
   margin-top: 2rem;
   background: #ffffff;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
 }
 
-.super-admin-log-container h4 {
+.super-admin-activity-log h4 {
   margin-bottom: 1rem;
   font-weight: 600;
   color: #2c3e50;
   font-size: 1.2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
 }
 
-.super-admin-log-container ul {
+.super-admin-activity-log ul {
   margin: 0;
-  padding-left: 1.5rem;
+  padding-left: 0;
+  list-style: none;
 }
 
-.super-admin-log-container li {
+.super-admin-activity-log li {
   line-height: 1.8;
   color: #636e72;
   font-size: 0.95rem;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
 }
+
+.activity-icon {
+  margin-right: 12px;
+  font-size: 16px;
+}
+
+.super-admin-stats-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding: 1rem 1.5rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  font-size: 13px;
+}
+
+.stat-item {
+  color: #555;
+  font-size: 13px;
+}
+
+.stat-item strong {
+  color: #2c3e50;
+  margin-right: 5px;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  text-align: center;
+  padding: 60px 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+.loading-spinner h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #4CAF50;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Error Message */
+.error-message {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #ffebee;
+  border-radius: 12px;
+  margin: 20px 0;
+  border: 1px solid #ffcdd2;
+}
+
+.error-message h3 {
+  color: #c62828;
+  margin-bottom: 10px;
+}
+
+.error-message p {
+  color: #d32f2f;
+  margin-bottom: 20px;
+}
+
+.retry-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.retry-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .super-admin-container {
+    padding: 1.5rem;
+  }
+  
+  .super-admin-title {
+    font-size: 2rem;
+  }
+  
+  .super-admin-role-card {
+    flex: 1 1 calc(33.33% - 1.5rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .super-admin-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .super-admin-role-card {
+    flex: 1 1 calc(50% - 1.5rem);
+  }
+  
+  .super-admin-total-summary {
+    font-size: 1.2rem;
+    padding: 0.8rem 1rem;
+  }
+  
+  .super-admin-chart-container {
+    padding: 1rem;
+  }
+  
+  .super-admin-table-container,
+  .super-admin-activity-log,
+  .super-admin-stats-footer {
+    padding: 1rem;
+  }
+  
+  .super-admin-table th,
+  .super-admin-table td {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+  
+  .copy-btn {
+    padding: 4px 10px;
+    font-size: 10px;
+  }
+  
+  .role-badge,
+  .status-badge {
+    padding: 3px 8px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .super-admin-container {
+    padding: 1rem;
+  }
+  
+  .super-admin-title {
+    font-size: 1.5rem;
+  }
+  
+  .super-admin-role-card {
+    flex: 1 1 100%;
+  }
+  
+  .super-admin-card-container {
+    gap: 1rem;
+  }
+  
+  .super-admin-stats-footer {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
+
+/* Scrollbar Styling */
+.super-admin-table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.super-admin-table-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.super-admin-table-wrapper::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.super-admin-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
