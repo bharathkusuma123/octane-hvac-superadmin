@@ -809,6 +809,11 @@ const SuperAdminDashboard = () => {
   const [serviceItems, setServiceItems] = useState([]);
   const [serviceItemsLoading, setServiceItemsLoading] = useState(false);
 
+  // add this state
+
+const [customers, setCustomers] = useState([]);
+const [customersLoading, setCustomersLoading] = useState(false);
+
   // Get userId and companyId from AuthContext
   const { userId, companyId } = useContext(AuthContext);
 
@@ -867,6 +872,42 @@ const SuperAdminDashboard = () => {
     }
   };
 
+  // add this function
+
+const fetchCustomers = async () => {
+  if (!userId || !companyId) {
+    console.log("Missing userId or companyId, skipping customers fetch");
+    return;
+  }
+
+  try {
+    setCustomersLoading(true);
+
+    const response = await axios.get(
+      `${baseURL}/customers/?user_id=${userId}&company_id=${companyId}`
+    );
+
+    console.log("Customers API Response:", response.data);
+
+    if (
+      response.data &&
+      response.data.status === "success" &&
+      Array.isArray(response.data.data)
+    ) {
+      setCustomers(response.data.data);
+      console.log("Fetched customers:", response.data.data);
+    } else {
+      console.error("Unexpected customers response format:", response.data);
+      setCustomers([]);
+    }
+  } catch (error) {
+    console.error("Error fetching customers:", error);
+    setCustomers([]);
+  } finally {
+    setCustomersLoading(false);
+  }
+};
+
   // Generate recent activities from user data
   const generateRecentActivities = (userData) => {
     // Sort users by created_at date (newest first)
@@ -898,15 +939,18 @@ const SuperAdminDashboard = () => {
   useEffect(() => {
     if (userId && companyId) {
       fetchServiceItems();
+      fetchCustomers(); // Fetch customers as well
     }
   }, [userId, companyId]);
 
   // Calculate role counts
   const roleCounts = users.reduce((acc, user) => {
-    const role = user.role || "Unknown";
-    acc[role] = (acc[role] || 0) + 1;
-    return acc;
-  }, {});
+  const role = user.role || "Unknown";
+  acc[role] = (acc[role] || 0) + 1;
+  return acc;
+}, {});
+
+roleCounts["Customers"] = customers.length;
 
   // Calculate status counts (if needed)
   const statusCounts = users.reduce((acc, user) => {
@@ -1064,7 +1108,7 @@ const SuperAdminDashboard = () => {
               <div key={role} className="super-admin-role-card">
                 <h4>{role}</h4>
                 <p>{count}</p>
-                <small>{((count / users.length) * 100).toFixed(1)}% of total</small>
+                {/* <small>{((count / users.length) * 100).toFixed(1)}% of total</small> */}
               </div>
             ))}
             
@@ -1083,7 +1127,31 @@ const SuperAdminDashboard = () => {
                 </small>
               ) : null}
             </div>
+
+{/* <div className="super-admin-role-card customers-card">
+  <h4>Customers</h4>
+  <p>{customersLoading ? "..." : customers.length}</p>
+
+  <small>
+    {customersLoading
+      ? "Loading..."
+      : `${customers.length} customer(s) available`}
+  </small>
+
+  {!userId || !companyId ? (
+    <small
+      style={{
+        display: "block",
+        color: "#ff9800",
+        marginTop: "5px",
+      }}
+    >
+      ⚠️ Login required
+    </small>
+  ) : null}
+</div> */}
           </div>
+          
 
           <div className="super-admin-chart-group">
             <div className="super-admin-chart-container">

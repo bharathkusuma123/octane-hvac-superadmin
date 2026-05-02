@@ -14,37 +14,40 @@ const SuperAdminLogin = () => {
   const { login } = useContext(AuthContext)
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(""); // Clear previous errors
-    setLoading(true); // Start loading
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
+  setLoading(true);
 
-    try {
-      const response = await axios.post(`${baseURL}/user-login/`, {
-        username,   
-        password,
+  try {
+    const response = await axios.post(`${baseURL}/user-login/`, {
+      username,
+      password,
+    });
+
+    const user = response.data.data;
+    const sessionId = response.data.data.session_id; // ✅ get session_id
+
+    if (user.role === "Super Admin") {
+      // ✅ Store session_id in localStorage
+      localStorage.setItem("session_id", sessionId);
+
+      login("superadmin", user.user_id, {
+        username: user.username,
+        default_company: user.default_company,
       });
 
-      const user = response.data.data;
-
-      if (user.role === "Super Admin") {
-        // Use context login instead of localStorage directly
-        login("superadmin", user.user_id, {
-          username: user.username,
-          default_company: user.default_company,
-        });
-
-        navigate("/superadmin/company-information");
-      } else {
-        setError("User is not a Super Admin");
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      setError(err.response?.data?.message || "Invalid Username or password");
-    } finally {
-      setLoading(false); // Stop loading regardless of success or error
+      navigate("/superadmin/super-admin-dashboard");
+    } else {
+      setError("User is not a Super Admin");
     }
-  };
+  } catch (err) {
+    console.error("Login error:", err);
+    setError(err.response?.data?.message || "Invalid Username or password");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <LoginCard
@@ -58,6 +61,7 @@ const SuperAdminLogin = () => {
       setShowPassword={setShowPassword}
       handleSubmit={handleSubmit}
       error={error}
+      navigate={navigate}  
     />
   );
 };

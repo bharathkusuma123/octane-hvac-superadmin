@@ -25,6 +25,7 @@ const LoginCard = ({
   setShowPassword,
   handleSubmit,
   error,
+  navigate,
 }) => {
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100">
@@ -77,6 +78,16 @@ const LoginCard = ({
                       </Button>
                     </InputGroup>
                   </Form.Group>
+                   <div className="text-end mb-3">
+                    <span
+                      className="forgot"
+                      style={{ cursor: "pointer", color: "#0096D6" }}
+                      onClick={() => navigate("/superadmin-forgot-password")}
+                    >
+                      Forgot Password?
+                    </span>
+                  </div> 
+
 
                   <Button 
                     variant="primary" 

@@ -281,6 +281,11 @@ import logo from "./Logos/hvac-logo-new.jpg";
 import DataRetentionConfig from "./DataRetention/DataRetentionConfig";
 import EditDataRetention from "./DataRetention/EditDataRetention";
 import baseURL from "./ApiUrl/Apiurl";
+import { useContext } from "react";
+import { AuthContext } from "./AuthContext/AuthContext";
+import ForgotPassword from "./Login/ForgotPassword";
+import ChangePassword from "./ChangePassword/ChangePassword";
+import ServiceItemDetails from "./ErrorLogs/ServiceItemDetails";
 
 // 🔹 Top Navbar
 const TopNavbar = () => {
@@ -290,6 +295,8 @@ const TopNavbar = () => {
   const userId = localStorage.getItem("userId");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(true);
+  const { logout } = useContext(AuthContext);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   // Fetch and set username
   useEffect(() => {
@@ -323,19 +330,17 @@ const TopNavbar = () => {
 
   if (userRole !== "superadmin") return null;
 
-  const handleLogout = () => {
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("username");
-    navigate("/");
-  };
+ const handleLogout = () => {
+  logout();   // ✅ centralized logout
+  navigate("/");
+};
 
   const navItems = [
+        { path: "/superadmin/super-admin-dashboard", label:"Dashboard"},
     { path: "/superadmin/company-information", label: "Company Information" },
     { path: "/superadmin/user-management", label: "Users" },
     { path: "/superadmin/view-questions", label: "Survey Questions" },
-    { path: "/superadmin/view-reports", label: "Reports" },
-    { path: "/superadmin/super-admin-dashboard", label:"SuperAdmin"},
+    // { path: "/superadmin/view-reports", label: "Reports" },
     { path: "/superadmin/Activity-logs", label:"Activity Logs"},
     { path: "/superadmin/Error-logs", label:"Error Logs"},
     { path: "/superadmin/problem-types", label: "Problem Types" },
@@ -360,23 +365,64 @@ const TopNavbar = () => {
             </Link>
           ))}
         </div>
-        <div className="nav-user">
-          {/* Display username with greeting */}
-          {!loading && username && (
-            <span className="user-greeting">
-              Hi, {username}
-            </span>
-          )}
-          
-          {/* Notification bell icon can be added here */}
-          {/* <button className="notification-bell">
-            <i className="bell-icon">🔔</i>
-          </button> */}
-          
-          <button onClick={handleLogout} className="logout-btn">
-            Logout
-          </button>
-        </div>
+
+<div className="nav-user" style={{ position: "relative" }}>
+  
+  {/* 👤 Profile Icon */}
+  <div
+    onClick={() => setShowDropdown(!showDropdown)}
+    style={{
+      cursor: "pointer",
+      fontSize: "20px",
+      background: "#f0f0f0",
+      borderRadius: "50%",
+      padding: "8px 12px",
+      marginRight: "10px"
+    }}
+  >
+    👤
+  </div>
+
+  {/* Dropdown */}
+  {showDropdown && (
+    <div
+      style={{
+        position: "absolute",
+        top: "40px",
+        right: "0",
+        background: "#fff",
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        padding: "10px",
+        width: "180px",
+        boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+        color: "#000000",
+        zIndex: 1000
+      }}
+    >
+      <div style={{ marginBottom: "8px", fontWeight: "bold" }}>
+        {username || "User"}
+      </div>
+
+      <hr />
+
+      <div
+        style={{ cursor: "pointer", color: "#007bff" }}
+        onClick={() => {
+          navigate("/superadmin/change-password"); // ✅ path
+          setShowDropdown(false);
+        }}
+      >
+        Change Password
+      </div>
+    </div>
+  )}
+
+  {/* Logout Button */}
+  <button onClick={handleLogout} className="logout-btn">
+    Logout
+  </button>
+</div>
       </div>
     </nav>
   );
@@ -408,6 +454,7 @@ function App() {
           {/* Public Route */}
           <Route path="/" element={<SuperAdminLogin />} />
 
+<Route path="/superadmin-forgot-password" element={<ForgotPassword />} />
           {/* Protected Routes */}
           <Route
             path="/superadmin/company-information"
@@ -444,7 +491,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-
+<Route
+  path="/superadmin/change-password"
+  element={
+    <ProtectedRoute>
+      <ChangePassword />
+    </ProtectedRoute>
+  }
+/>
           <Route
             path="/superadmin/customer-satisfaction-survey"
             element={
@@ -541,6 +595,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <ErrorLogs/>
+              </ProtectedRoute>
+            }
+          />
+
+             <Route
+            path="/superadmin/service-item-details/:id"
+            element={
+              <ProtectedRoute>
+                <ServiceItemDetails />
               </ProtectedRoute>
             }
           />

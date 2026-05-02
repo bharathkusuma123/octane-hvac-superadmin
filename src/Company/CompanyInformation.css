@@ -10,6 +10,8 @@
   margin-bottom: 10px;
 }
 
+
+
 .company-form-box {
   background: #fff;
   padding: 30px;
@@ -185,4 +187,23 @@
 
 .delete-icon {
   color: #dc3545;
+}
+
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper input {
+  padding-right: 45px;
+}
+
+.eye-icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+  font-size: 18px;
 }
