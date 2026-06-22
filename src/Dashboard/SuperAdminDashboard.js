@@ -951,6 +951,7 @@ const fetchCustomers = async () => {
 }, {});
 
 roleCounts["Customers"] = customers.length;
+roleCounts["Service Items"] = serviceItems.length;
 
   // Calculate status counts (if needed)
   const statusCounts = users.reduce((acc, user) => {
@@ -1113,7 +1114,7 @@ roleCounts["Customers"] = customers.length;
             ))}
             
             {/* Service Items Card - Display count of service items */}
-            <div className="super-admin-role-card service-items-card">
+            {/* <div className="super-admin-role-card service-items-card">
               <h4>Service Items</h4>
               <p>{serviceItemsLoading ? '...' : serviceItems.length}</p>
               <small>
@@ -1126,7 +1127,7 @@ roleCounts["Customers"] = customers.length;
                   ⚠️ Login required
                 </small>
               ) : null}
-            </div>
+            </div> */}
 
 {/* <div className="super-admin-role-card customers-card">
   <h4>Customers</h4>
